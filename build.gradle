@@ -1,0 +1,19 @@
+plugins {
+    id 'java'
+}
+
+group 'com.thejar'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+repositories {
+
+    jcenter()
+}
+dependencies {
+    compile "net.dv8tion:JDA:4.0.0_39"
+    compile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '3.+'
+}
+
+
+compileJava.options.encoding = 'UTF-8'
