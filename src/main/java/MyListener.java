@@ -15,14 +15,14 @@ public class MyListener extends ListenerAdapter {
         // getContentRaw() is an atomic getter
         // getContentDisplay() is a lazy getter which modifies the content for e.g. console view (strip discord formatting)
         if (content.startsWith("warbot ")) {
-            WikiBox wikibox = null;
+            MessageChannel channel = event.getChannel();
             try {
-                wikibox = new WikiBox(content.substring(7));
+                String title = WikiBox.scrapeWiki(content.substring(7));
+                channel.sendMessage(title).queue(); // Important to call .queue() on the RestAction returned by sendMessage(...)
             } catch (IOException e) {
                 e.printStackTrace();
+                channel.sendMessage("not found");
             }
-            MessageChannel channel = event.getChannel();
-            channel.sendMessage(wikibox.title).queue(); // Important to call .queue() on the RestAction returned by sendMessage(...)
 
         }
     }
