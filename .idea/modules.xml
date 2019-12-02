@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/WarBot.iml" filepath="$PROJECT_DIR$/.idea/WarBot.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/warbot.iml" filepath="$PROJECT_DIR$/.idea/warbot.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/warbot.main.iml" filepath="$PROJECT_DIR$/.idea/modules/warbot.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/warbot.test.iml" filepath="$PROJECT_DIR$/.idea/modules/warbot.test.iml" />
     </modules>
   </component>
 </project>

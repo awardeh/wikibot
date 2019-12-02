@@ -1,38 +1,36 @@
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import ru.yandex.qatools.ashot.AShot;
+import ru.yandex.qatools.ashot.Screenshot;
+import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
 
-import java.io.IOException;
+import javax.imageio.ImageIO;
+import java.io.File;
 
-public class WikiBox {
-//    public String title;
-//    Image sc;
-//    private String result;
-//    private String sides;
-//    private String years;
-//    private String location;
-//    private String strength;
+class WikiBox {
 
-    public static String scrapeWiki(String input) throws IOException {
-        String output = "";
+    private static final String path = "C:\\Users\\aw\\IdeaProjects\\warbot\\test.jpg";
+
+    static void scrapeWikiPic(String input) throws Exception {
         FirefoxDriver driver = new FirefoxDriver();
         driver.get("http://en.wikipedia.org/");
         WebElement searchBox = driver.findElement(By.id("searchInput"));
         searchBox.sendKeys(input);
+        Thread.sleep(500);
+        searchBox.sendKeys(Keys.ARROW_DOWN);
         searchBox.sendKeys(Keys.RETURN);
-        String title = driver.findElements(By.xpath("//table[@class='infobox vevent']")).toString();
-        driver.close();
-        return title;
-
+        Thread.sleep(500);
+        try {
+            WebElement infobox = driver.findElementByClassName("infobox");
+            Screenshot myScreenshot = new AShot().shootingStrategy(ShootingStrategies.viewportPasting(100)).takeScreenshot(driver, infobox);
+            ImageIO.write(myScreenshot.getImage(), "jpg", new File(path));
+            driver.close();
+        } catch (Exception NoSuchElementException) {
+            driver.close();
+            throw new NoSuchElementException("can't find element boss");
+        }
     }
-
-//    void setTitle(String s) {
-//        this.title = s;
-//    }
-
-//    String getTitle(String s) {
-//        return this.title;
-//    }
 }
-

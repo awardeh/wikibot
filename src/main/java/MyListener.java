@@ -1,28 +1,54 @@
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-import java.io.IOException;
+import java.io.File;
 
 public class MyListener extends ListenerAdapter {
+    private static final String path = "C:\\Users\\aw\\IdeaProjects\\warbot\\test.jpg";
+
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        if (event.getAuthor().isBot()) return;
-        // We don't want to respond to other bot accounts, including ourself
+        User author = event.getAuthor();
+        if (author.isBot()) return;
         Message message = event.getMessage();
         String content = message.getContentRaw();
-        // getContentRaw() is an atomic getter
-        // getContentDisplay() is a lazy getter which modifies the content for e.g. console view (strip discord formatting)
-        if (content.startsWith("warbot ")) {
-            MessageChannel channel = event.getChannel();
-            try {
-                String title = WikiBox.scrapeWiki(content.substring(7));
-                channel.sendMessage(title).queue(); // Important to call .queue() on the RestAction returned by sendMessage(...)
-            } catch (IOException e) {
-                e.printStackTrace();
-                channel.sendMessage("not found");
+        MessageChannel channel = event.getChannel();
+        //meme responses
+        if (content.startsWith("tch") || content.startsWith("Tch")) {
+            channel.sendMessage("tch yourself").queue();
+        }
+        if (content.startsWith("based") || content.startsWith("Based") || content.startsWith("BASED")) {
+            channel.sendMessage("based").queue();
+        }
+        //commands
+        if ((content.startsWith("warbot") || (content.startsWith("Warbot")))) {
+            String newString = content.substring(7);
+            //screenshot infobox
+            if (newString.startsWith("pic")) {
+                channel = event.getChannel();
+                try {
+                    message.addReaction("ragetears:588143943892336896").queue();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                try {
+                    WikiBox.scrapeWikiPic(content.substring(11));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    channel.sendMessage("bruh not found try a more specific title").queue();
+                }
+                channel.sendFile(new File(path)).queue();
             }
+            if (author.getId().equals("534564220704915456"))
+                if (newString.startsWith("off yourself")) {
+                    channel = event.getChannel();
+                    channel.sendMessage("The sweet release of death <:woo:633411508180877339>").queue();
+                    message.addReaction(":woo:633411508180877339").queue();
+                    System.exit(0);
+                }
 
         }
     }
