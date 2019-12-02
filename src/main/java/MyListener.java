@@ -25,8 +25,8 @@ public class MyListener extends ListenerAdapter {
         if (content.startsWith("based") || content.startsWith("Based") || content.startsWith("BASED")) {
             channel.sendMessage("based").queue();
         }
-        if (author.getId().equals("327404184720769034")){
-            channel.sendMessage("SHUT THE FUCK UP <@327404184720769034>");
+        if (author.getId().equals("327404184720769034")) {
+            channel.sendMessage("SHUT THE FUCK UP <@327404184720769034>").queue();
         }
         //commands
         if ((content.startsWith("warbot") || (content.startsWith("Warbot")))) {
@@ -35,43 +35,9 @@ public class MyListener extends ListenerAdapter {
 
             //rng answers aka 8ball
             if (newString.startsWith("question") || newString.startsWith("Question")) {
-                Random random = new Random();
-                int x = (int) (10.0 * Math.random());
-                switch (x) {
-                    case 0:
-                        channel.sendMessage("no").queue();
-                        break;
-                    case 1:
-                        channel.sendMessage("yes").queue();
-                        break;
-                    case 2:
-                        channel.sendMessage("bruh no way").queue();
-                        break;
-                    case 3:
-                        channel.sendMessage("yes obviously").queue();
-                        break;
-                    case 4:
-                        channel.sendMessage("maybe").queue();
-                        break;
-                    case 5:
-                        channel.sendMessage("not sure myself").queue();
-                        break;
-                    case 6:
-                        channel.sendMessage("shut up").queue();
-                        break;
-                    case 7:
-                        channel.sendMessage("i don't think so").queue();
-                        break;
-                    case 8:
-                        channel.sendMessage("if you believe").queue();
-                        break;
-                    case 9:
-                        channel.sendMessage("sure").queue();
-                        break;
-
-                }
-
+                channel.sendMessage(eightBall()).queue();
             }
+
             //screenshot wikipedia infobox
             if (newString.startsWith("pic")) {
                 channel = event.getChannel();
@@ -102,5 +68,46 @@ public class MyListener extends ListenerAdapter {
                 }
 
         }
+    }
+
+
+    private String eightBall() {
+        Random random = new Random();
+        String result = "";
+        int x = (int) (10.0 * Math.random());
+        switch (x) {
+            case 0:
+                result = "no";
+                break;
+            case 1:
+                result = "yes";
+                break;
+            case 2:
+                result = "bruh no way";
+                break;
+            case 3:
+                result = "yes obviously";
+                break;
+            case 4:
+                result = "maybe";
+                break;
+            case 5:
+                result = "not sure tbh";
+                break;
+            case 6:
+                result = "shut up";
+                break;
+            case 7:
+                result = "I don't think so";
+                break;
+            case 8:
+                result = "if you believe";
+                break;
+            case 9:
+                result = "sure";
+                break;
+        }
+        return result;
+
     }
 }
