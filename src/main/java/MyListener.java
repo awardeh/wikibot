@@ -47,7 +47,7 @@ public class MyListener extends ListenerAdapter {
                     e.printStackTrace();
                 }
                 try {
-                    WikiBox.scrapeWikiPic(content.substring(11));
+                    WikiBox.scrapeWikiPic(newString.substring(4));
                     channel.sendFile(new File(path)).queue();
                 } catch (NoSuchElementException e) {
                     e.printStackTrace();

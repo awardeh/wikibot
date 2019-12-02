@@ -19,7 +19,7 @@ class WikiBox {
         Thread.sleep(500);
         searchBox.sendKeys(Keys.ARROW_DOWN);
         searchBox.sendKeys(Keys.RETURN);
-        Thread.sleep(500);
+        Thread.sleep(1000);
         try {
             WebElement infobox = driver.findElementByClassName( "infobox");
             Screenshot myScreenshot = new AShot().shootingStrategy(ShootingStrategies.viewportPasting(100)).takeScreenshot(driver, infobox);
