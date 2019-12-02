@@ -1,7 +1,4 @@
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import ru.yandex.qatools.ashot.AShot;
 import ru.yandex.qatools.ashot.Screenshot;
@@ -12,7 +9,7 @@ import java.io.File;
 
 class WikiBox {
 
-    private static final String path = "";
+    private static final String path = "C:\\Users\\aw\\IdeaProjects\\warbot\\test.jpg";
 
     static void scrapeWikiPic(String input) throws Exception {
         FirefoxDriver driver = new FirefoxDriver();
@@ -24,7 +21,7 @@ class WikiBox {
         searchBox.sendKeys(Keys.RETURN);
         Thread.sleep(500);
         try {
-            WebElement infobox = driver.findElementByClassName("infobox");
+            WebElement infobox = driver.findElementByClassName( "infobox");
             Screenshot myScreenshot = new AShot().shootingStrategy(ShootingStrategies.viewportPasting(100)).takeScreenshot(driver, infobox);
             ImageIO.write(myScreenshot.getImage(), "jpg", new File(path));
             driver.close();
