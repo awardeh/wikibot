@@ -12,7 +12,7 @@ import java.io.File;
 
 class WikiBox {
 
-    private static final String path = "C:\\Users\\aw\\IdeaProjects\\warbot\\test.jpg";
+    private static final String path = "";
 
     static void scrapeWikiPic(String input) throws Exception {
         FirefoxDriver driver = new FirefoxDriver();

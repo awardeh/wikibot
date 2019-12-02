@@ -7,7 +7,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import java.io.File;
 
 public class MyListener extends ListenerAdapter {
-    private static final String path = "C:\\Users\\aw\\IdeaProjects\\warbot\\test.jpg";
+    private static final String path = "";
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
