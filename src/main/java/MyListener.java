@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.openqa.selenium.NoSuchElementException;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Random;
 
 public class MyListener extends ListenerAdapter {
@@ -25,9 +26,6 @@ public class MyListener extends ListenerAdapter {
         if (content.startsWith("based") || content.startsWith("Based") || content.startsWith("BASED")) {
             channel.sendMessage("based").queue();
         }
-        if (author.getId().equals("327404184720769034")) {
-            channel.sendMessage("SHUT THE FUCK UP <@327404184720769034>").queue();
-        }
         //commands
         if ((content.startsWith("warbot") || (content.startsWith("Warbot")))) {
             //remove the first part of string
@@ -39,31 +37,41 @@ public class MyListener extends ListenerAdapter {
             }
 
             //screenshot wikipedia infobox
-            if (newString.startsWith("pic")) {
+            if (newString.startsWith("pic ")) {
                 channel = event.getChannel();
                 try {
-                    message.addReaction("ragetears:588143943892336896").queue();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                try {
-                    WikiBox.scrapeWikiPic(newString.substring(4));
+                    WikiBox.scrapeWikiPic(newString.substring(newString.indexOf(" ") + 1));
                     channel.sendFile(new File(path)).queue();
                 } catch (NoSuchElementException e) {
                     e.printStackTrace();
                     channel.sendMessage("can't find infobox").queue();
+                    message.addReaction(":ragescream:621200977671749652").queue();
                 } catch (Exception e) {
+                    e.printStackTrace();
+                    channel.sendMessage("dummy thicc error").queue();
+                    message.addReaction(":ragescream:621200977671749652").queue();
+                }
+            }
+            //weather
+            if(newString.startsWith("weather") || newString.startsWith("Weather")){
+                try {
+                    channel.sendMessage("```" + Weather.getWeather(newString.substring(newString.indexOf(" ") + 1)) + "```").queue();
+                } catch (IOException e) {
                     e.printStackTrace();
                     channel.sendMessage("dummy thicc error").queue();
                 }
             }
-
             //turn off
-            if (author.getId().equals("534564220704915456"))
+            if (author.getId().equals("534564220704915456") || author.getId().equals("108312797162541056"))
                 if (newString.startsWith("off yourself")) {
                     channel = event.getChannel();
                     channel.sendMessage("The sweet release of death <:woo:633411508180877339>").queue();
                     message.addReaction(":woo:633411508180877339").queue();
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     System.exit(0);
                 }
 
