@@ -4,6 +4,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Scanner;
 
 public class Weather {
@@ -14,26 +15,48 @@ public class Weather {
 
     public static String getWeather(String s) throws IOException {
         JSONObject obj;
-        if (s.contains(" ")) {
-            String[] splittedString = s.split(" ");
+        String tempMax;
+        String tempMin;
+        String temp;
+        String humidity;
+        String description;
+        String country;
+        String windDeg;
+        String cityName;
+        String windSpeed;
+        if (s.contains(",")) {
+            String[] splittedString = s.trim().split(",");
+            splittedString[0] = splittedString[0].trim();
+            splittedString[1] = splittedString[1].trim();
             obj = openWeatherCountry(splittedString);
         } else {
-            obj = openWeather(s);
+            String input = s.trim();
+            obj = openWeather(input);
         }
         JSONObject main = (JSONObject) obj.get("main");
         JSONArray weather = (JSONArray) obj.get("weather");
         JSONObject weather2 = (JSONObject) weather.get(0);
         JSONObject wind = (JSONObject) obj.get("wind");
         JSONObject sys = (JSONObject) obj.get("sys");
-        String temp = main.get("temp").toString();
-        String tempMin = main.get("temp_min").toString();
-        String tempMax = main.get("temp_max").toString();
-        String humidity = main.get("humidity").toString();
-        String description = weather2.get("description").toString();
-        String country = sys.get("country").toString();
-        String windSpeed = wind.get("speed").toString();
-        String windDeg = wind.get("deg").toString();
-        String cityName = obj.get("name").toString();
+        try {
+            windDeg = wind.get("deg").toString();
+        } catch (Exception e) {
+            windDeg = "N/A";
+        }
+
+        tempMin = main.get("temp_min").toString();
+        tempMax = main.get("temp_max").toString();
+        temp = main.get("temp").toString();
+        humidity = main.get("humidity").toString();
+        description = weather2.get("description").toString();
+        country = sys.get("country").toString();
+        windSpeed = wind.get("speed").toString();
+        cityName = obj.get("name").toString();
+        System.out.println(cityName);
+        byte[] b = cityName.getBytes("UTF-8");
+        cityName = new String(b, "UTF-8");
+        System.out.println(cityName);
+
 
         String result = String.format("%s, %s - %s\ntemperature: %s\nmin: %s\nhigh: %s\nwind speed: %s direction of %s degrees\nHumidity: %s\n",
                 cityName, country, description, temp, tempMin, tempMax, windSpeed, windDeg, humidity);
@@ -42,20 +65,24 @@ public class Weather {
     }
 
     private static JSONObject openWeatherCountry(String[] splittedString) throws IOException {
-        URL url = new URL(API_URL + splittedString[0] + "," + splittedString[1] + API_KEY + UNITS);
+        String encodedString= URLEncoder.encode( splittedString[0] , "UTF-8" );
+        URL url = new URL(API_URL + encodedString + "," + splittedString[1] + API_KEY + UNITS);
+        System.out.println(url);
         JSONObject obj = getJSON(url);
         return obj;
     }
 
 
     private static JSONObject openWeather(String city) throws IOException {
-        URL url = new URL(API_URL + city + API_KEY + UNITS);
+        String encodedString= URLEncoder.encode( city , "UTF-8" );
+        URL url = new URL(API_URL + encodedString + API_KEY + UNITS);
+        System.out.println(encodedString);
         JSONObject obj = getJSON(url);
         return obj;
     }
 
     public static void main(String[] args) throws IOException {
-        String test = getWeather("jerusalem");
+        String test = getWeather(" Linköping");
         System.out.println(test);
     }
 
