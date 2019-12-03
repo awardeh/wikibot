@@ -7,7 +7,6 @@ import org.openqa.selenium.NoSuchElementException;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Random;
 
 public class MyListener extends ListenerAdapter {
     private static final String path = "C:\\Users\\aw\\IdeaProjects\\warbot\\test.jpg";
@@ -53,12 +52,14 @@ public class MyListener extends ListenerAdapter {
                 }
             }
             //weather
-            if(newString.startsWith("weather") || newString.startsWith("Weather")){
+            if (newString.startsWith("weather") || newString.startsWith("Weather")) {
                 try {
                     channel.sendMessage("```" + Weather.getWeather(newString.substring(newString.indexOf(" ") + 1)) + "```").queue();
-                } catch (IOException e) {
+                } catch (IllegalArgumentException | IOException e) {
                     e.printStackTrace();
-                    channel.sendMessage("dummy thicc error").queue();
+                    channel.sendMessage("not found, try being specific [no countries yet don't try that]").queue();
+                } catch (RuntimeException e) {
+                    channel.sendMessage("dummy thicc error");
                 }
             }
             //turn off
@@ -75,12 +76,16 @@ public class MyListener extends ListenerAdapter {
                     System.exit(0);
                 }
 
+            if (newString.startsWith("help") || newString.startsWith("help")) {
+                channel.sendMessage("WIP\ncurrent commands: pic [wiki article with infobox], question[your question], weather [city or postal code]").queue();
+            }
+
         }
+
     }
 
 
     private String eightBall() {
-        Random random = new Random();
         String result = "";
         int x = (int) (10.0 * Math.random());
         switch (x) {
