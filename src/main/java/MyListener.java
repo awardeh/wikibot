@@ -17,6 +17,7 @@ public class MyListener extends ListenerAdapter {
         if (author.isBot()) return;
         Message message = event.getMessage();
         String content = message.getContentRaw();
+
         MessageChannel channel = event.getChannel();
         //meme responses
         if (content.startsWith("tch") || content.startsWith("Tch")) {
@@ -26,7 +27,7 @@ public class MyListener extends ListenerAdapter {
             channel.sendMessage("based").queue();
         }
         //commands
-        if ((content.startsWith("warbot") || (content.startsWith("Warbot")))) {
+        if ((content.startsWith("warbot")) || (content.startsWith("Warbot")) || (content.startsWith("~w"))){
             //remove the first part of string
             String newString = content.substring(content.indexOf(" ") + 1);
 
@@ -54,11 +55,12 @@ public class MyListener extends ListenerAdapter {
             //weather
             if (newString.startsWith("weather") || newString.startsWith("Weather")) {
                 try {
-                    channel.sendMessage("```" + Weather.getWeather(newString.substring(newString.indexOf(" ") + 1)) + "```").queue();
+                    String weather = Weather.getWeather(newString.substring(newString.indexOf(" ")));
+                    channel.sendMessage(weather).queue();
                 } catch (IllegalArgumentException | IOException e) {
                     e.printStackTrace();
-                    channel.sendMessage("not found, try being specific [no countries yet don't try that]").queue();
-                } catch (RuntimeException e) {
+                    channel.sendMessage("not found, try being specific [format is either ~w weather toronto or ~w weather toronto, CA]").queue();
+                } catch (Exception e) {
                     channel.sendMessage("dummy thicc error");
                 }
             }
@@ -77,7 +79,7 @@ public class MyListener extends ListenerAdapter {
                 }
 
             if (newString.startsWith("help") || newString.startsWith("help")) {
-                channel.sendMessage("WIP\ncurrent commands: pic [wiki article with infobox], question[your question], weather [city or postal code]").queue();
+                channel.sendMessage("WIP\ncurrent commands: pic [~w pic battle of the bulge], question[~w question is this bot good?], weather [ ~w weather toronto or ~w weather toronto, CA]").queue();
             }
 
         }
