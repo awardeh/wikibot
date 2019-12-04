@@ -3,24 +3,36 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import ru.yandex.qatools.ashot.AShot;
 import ru.yandex.qatools.ashot.Screenshot;
 import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
-
 import javax.imageio.ImageIO;
-import java.io.File;
+import java.io.*;
+import java.util.List;
 
 class WikiBox {
 
-    private static final String path = "C:\\Users\\aw\\IdeaProjects\\warbot\\test.jpg";
+    //    private static final String path = "C:\\Users\\aw\\IdeaProjects\\warbot\\test.jpg";
+    private static final String PATH = "./test.jpg";
+    private static final String INPUTS = "./inputs.txt";
+
 
     static void scrapeWikiPic(String input) throws Exception {
+        //save user inputs in text file
+        BufferedWriter out = new BufferedWriter(new FileWriter(INPUTS, true));
+        out.write("pic " + input);
+        out.newLine();
+        out.close();
+
         FirefoxDriver driver = getPage(input);
+        WebDriverWait wait = new WebDriverWait(driver, 10);
         try {
-            WebElement infobox = driver.findElementByClassName("infobox");
+            WebElement infobox = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("infobox")));
             Screenshot myScreenshot = new AShot().shootingStrategy(ShootingStrategies.viewportPasting(100)).takeScreenshot(driver, infobox);
-            ImageIO.write(myScreenshot.getImage(), "jpg", new File(path));
-            Thread.sleep(1000);
+            ImageIO.write(myScreenshot.getImage(), "jpg", new File(PATH));
             driver.close();
         } catch (Exception NoSuchElementException) {
             driver.close();
@@ -31,8 +43,11 @@ class WikiBox {
     static void scrapeWikiText(String input) throws Exception {
         FirefoxDriver driver = getPage(input);
         try {
+            Thread.sleep(1600);//wait for page load
             WebElement infobox = driver.findElementByClassName("infobox");
-            infobox.findElements(By.tagName("td"));
+            WebElement battleName = infobox.findElement(By.className("summary"));
+            WebElement partOf = infobox.findElement(By.xpath("//*[@id=\"mw-content-text\"]/div/div[4]/div[1]/table/tbody/tr[2]/td"));
+            WebElement results = infobox.findElement(By.xpath("//*[@id=\"mw-content-text\"]/div/div[4]/div[1]/table/tbody/tr[4]/td/table/tbody"));
         } catch (Exception NoSuchElementException) {
             driver.close();
             throw new NoSuchElementException("can't find element boss");
@@ -40,18 +55,20 @@ class WikiBox {
     }
 
     private static FirefoxDriver getPage(String input) throws InterruptedException {
-        FirefoxDriver driver = new FirefoxDriver();
+        FirefoxOptions options = new FirefoxOptions();
+        options.setHeadless(true);
+        FirefoxDriver driver = new FirefoxDriver(options);
         driver.get("http://en.wikipedia.org/");
         WebElement searchBox = driver.findElement(By.id("searchInput"));
         searchBox.sendKeys(input);
-        Thread.sleep(1000);
+        Thread.sleep(400);
         searchBox.sendKeys(Keys.ARROW_DOWN);
         searchBox.sendKeys(Keys.RETURN);
-        Thread.sleep(1000);
+
         return driver;
     }
 
-    public static void main(String[] args) {
-
+    public static void main(String[] args) throws Exception {
+        scrapeWikiPic("Battle of the bulge");
     }
 }

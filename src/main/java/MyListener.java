@@ -9,7 +9,8 @@ import java.io.File;
 import java.io.IOException;
 
 public class MyListener extends ListenerAdapter {
-    private static final String path = "C:\\Users\\aw\\IdeaProjects\\warbot\\test.jpg";
+//    private static final String PATH = "C:\\Users\\aw\\IdeaProjects\\warbot\\test.jpg";
+private static final String PATH = "./test.jpg";
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
@@ -27,21 +28,23 @@ public class MyListener extends ListenerAdapter {
             channel.sendMessage("based").queue();
         }
         //commands
-        if ((content.startsWith("warbot")) || (content.startsWith("Warbot")) || (content.startsWith("~w"))){
+        if ((content.startsWith("warbot")) || (content.startsWith("Warbot")) || (content.startsWith("~w"))) {
             //remove the first part of string
             String newString = content.substring(content.indexOf(" ") + 1);
-
-            //rng answers aka 8ball
-            if (newString.startsWith("question") || newString.startsWith("Question")) {
-                channel.sendMessage(eightBall()).queue();
+            if (newString.contains("gay") || newString.contains("Gay")) {
+                channel.sendMessage("<@" + author.getId() + "> is gay").queue();
             }
 
+            //rng answers aka 8ball
+            else if (newString.startsWith("question") || newString.startsWith("Question")) {
+                channel.sendMessage(eightBall()).queue();
+            }
             //screenshot wikipedia infobox
-            if (newString.startsWith("pic ")) {
+            else if (newString.startsWith("pic ")) {
                 channel = event.getChannel();
                 try {
                     WikiBox.scrapeWikiPic(newString.substring(newString.indexOf(" ") + 1));
-                    channel.sendFile(new File(path)).queue();
+                    channel.sendFile(new File(PATH)).queue();
                 } catch (NoSuchElementException e) {
                     e.printStackTrace();
                     channel.sendMessage("can't find infobox").queue();
@@ -53,15 +56,17 @@ public class MyListener extends ListenerAdapter {
                 }
             }
             //weather
-            if (newString.startsWith("weather") || newString.startsWith("Weather")) {
+            else if (newString.startsWith("weather") || newString.startsWith("Weather")) {
                 try {
                     String weather = Weather.getWeather(newString.substring(newString.indexOf(" ")));
                     channel.sendMessage(weather).queue();
                 } catch (IllegalArgumentException | IOException e) {
                     e.printStackTrace();
                     channel.sendMessage("not found, try being specific [format is either ~w weather toronto or ~w weather toronto, CA]").queue();
+                    message.addReaction(":ragescream:621200977671749652").queue();
                 } catch (Exception e) {
                     channel.sendMessage("dummy thicc error");
+                    message.addReaction(":ragescream:621200977671749652").queue();
                 }
             }
             //turn off
@@ -71,15 +76,16 @@ public class MyListener extends ListenerAdapter {
                     channel.sendMessage("The sweet release of death <:woo:633411508180877339>").queue();
                     message.addReaction(":woo:633411508180877339").queue();
                     try {
-                        Thread.sleep(500);
+                        Thread.sleep(100);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                     System.exit(0);
                 }
 
-            if (newString.startsWith("help") || newString.startsWith("help")) {
-                channel.sendMessage("WIP\ncurrent commands: pic [~w pic battle of the bulge], question[~w question is this bot good?], weather [ ~w weather toronto or ~w weather toronto, CA]").queue();
+            if (newString.startsWith("help") || newString.startsWith("Help")) {
+                channel.sendMessage("WIP current commands:\npic [~w pic battle of the bulge]\nquestion[~w question is this bot good?]," +
+                        "\nweather [ ~w weather toronto or ~w weather toronto, CA]").queue();
             }
 
         }
