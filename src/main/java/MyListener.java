@@ -21,30 +21,24 @@ public class MyListener extends ListenerAdapter {
 
         MessageChannel channel = event.getChannel();
         //meme responses
-        if (content.startsWith("tch") || content.startsWith("Tch")) {
+        if (content.toLowerCase().startsWith("tch")) {
             channel.sendMessage("tch yourself").queue();
         }
-        if (content.startsWith("cope") || content.startsWith("Cope")) {
-            message.addReaction(":cope:588146215779172378").queue();
-        }
 
-        if (content.startsWith("based") || content.startsWith("Based") || content.startsWith("BASED")) {
-            channel.sendMessage("based").queue();
-        }
         //commands
-        if ((content.startsWith("warbot")) || (content.startsWith("Warbot")) || (content.startsWith("~w"))) {
+        if ((content.toLowerCase().startsWith("warbot")) || (content.startsWith("~w"))) {
             //remove the first part of string
             String newString = content.substring(content.indexOf(" ") + 1);
-            if (newString.contains("gay") || newString.contains("Gay")) {
+            if (newString.toLowerCase().contains("gay")) {
                 channel.sendMessage("<@" + author.getId() + "> is gay").queue();
             }
 
             //rng answers aka 8ball
-            else if (newString.startsWith("question") || newString.startsWith("Question")) {
+            else if (newString.toLowerCase().startsWith("question")) {
                 channel.sendMessage(eightBall()).queue();
             }
             //screenshot wikipedia infobox
-            else if (newString.startsWith("pic ")) {
+            else if (newString.toLowerCase().startsWith("pic ")) {
                 channel = event.getChannel();
                 try {
                     WikiBox.scrapeWikiPic(newString.substring(newString.indexOf(" ") + 1));
@@ -62,7 +56,7 @@ public class MyListener extends ListenerAdapter {
                 }
             }
             //weather
-            else if (newString.startsWith("weather") || newString.startsWith("Weather")) {
+            else if (newString.toLowerCase().startsWith("weather")) {
                 try {
                     String weather = Weather.getWeather(newString.substring(newString.indexOf(" ")));
                     channel.sendMessage(weather).queue();
@@ -89,7 +83,7 @@ public class MyListener extends ListenerAdapter {
                     System.exit(0);
                 }
 
-            if (newString.startsWith("help") || newString.startsWith("Help")) {
+            if (newString.toLowerCase().startsWith("help")) {
                 channel.sendMessage("WIP current commands:\npic [~w pic battle of the bulge]\nquestion[~w question is this bot good?]," +
                         "\nweather [ ~w weather toronto or ~w weather toronto, CA]").queue();
             }
