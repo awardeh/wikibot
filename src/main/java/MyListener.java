@@ -48,7 +48,9 @@ public class MyListener extends ListenerAdapter {
                 channel = event.getChannel();
                 try {
                     WikiBox.scrapeWikiPic(newString.substring(newString.indexOf(" ") + 1));
-                    channel.sendFile(new File(PATH)).queue();
+                    File file = new File(PATH);
+                    channel.sendFile(file).queue();
+                    file.delete();
                 } catch (NoSuchElementException e) {
                     e.printStackTrace();
                     channel.sendMessage("can't find infobox").queue();
