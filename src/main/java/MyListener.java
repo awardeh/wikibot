@@ -9,8 +9,8 @@ import java.io.File;
 import java.io.IOException;
 
 public class MyListener extends ListenerAdapter {
-//    private static final String PATH = "C:\\Users\\aw\\IdeaProjects\\warbot\\test.jpg";
-private static final String PATH = "./test.jpg";
+    //    private static final String PATH = "C:\\Users\\aw\\IdeaProjects\\warbot\\test.jpg";
+    private static final String PATH = "./test.jpg";
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
@@ -24,6 +24,10 @@ private static final String PATH = "./test.jpg";
         if (content.startsWith("tch") || content.startsWith("Tch")) {
             channel.sendMessage("tch yourself").queue();
         }
+        if (content.startsWith("cope") || content.startsWith("Cope")) {
+            message.addReaction(":cope:588146215779172378").queue();
+        }
+
         if (content.startsWith("based") || content.startsWith("Based") || content.startsWith("BASED")) {
             channel.sendMessage("based").queue();
         }

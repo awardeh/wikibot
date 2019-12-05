@@ -9,9 +9,11 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import ru.yandex.qatools.ashot.AShot;
 import ru.yandex.qatools.ashot.Screenshot;
 import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
+
 import javax.imageio.ImageIO;
-import java.io.*;
-import java.util.List;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 
 class WikiBox {
 
@@ -28,8 +30,9 @@ class WikiBox {
         out.close();
 
         FirefoxDriver driver = getPage(input);
-        WebDriverWait wait = new WebDriverWait(driver, 10);
+        WebDriverWait wait = new WebDriverWait(driver, 5);
         try {
+            Thread.sleep(600);
             WebElement infobox = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("infobox")));
             Screenshot myScreenshot = new AShot().shootingStrategy(ShootingStrategies.viewportPasting(100)).takeScreenshot(driver, infobox);
             ImageIO.write(myScreenshot.getImage(), "jpg", new File(PATH));
@@ -61,14 +64,15 @@ class WikiBox {
         driver.get("http://en.wikipedia.org/");
         WebElement searchBox = driver.findElement(By.id("searchInput"));
         searchBox.sendKeys(input);
-        Thread.sleep(400);
+        Thread.sleep(600);
         searchBox.sendKeys(Keys.ARROW_DOWN);
         searchBox.sendKeys(Keys.RETURN);
 
         return driver;
     }
-
-    public static void main(String[] args) throws Exception {
-        scrapeWikiPic("Battle of the bulge");
-    }
 }
+
+//    public static void main(String[] args) throws Exception {
+//        scrapeWikiPic("Battle of the bulge");
+//    }
+//}

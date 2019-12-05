@@ -7,7 +7,11 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
+
+import static java.lang.Float.parseFloat;
+import static java.lang.Math.round;
 
 public class Weather {
     private static final String API_URL = "http://api.openweathermap.org/data/2.5/weather?q=";
@@ -20,18 +24,16 @@ public class Weather {
         BufferedWriter out = new BufferedWriter(new FileWriter(INPUTS, true));
         out.write("weather " + s);
         out.newLine();
-        out.close();
-
         JSONObject obj;
-        String tempMax;
-        String tempMin;
-        String temp;
-        String humidity;
+        int tempMax;
+        int tempMin;
+        int temp;
+        int humidity;
         String description;
         String country;
-        String windDeg;
+        int windDeg;
         String cityName;
-        String windSpeed;
+        int windSpeed;
         if (s.contains(",")) {
             String[] splittedString = s.trim().split(",");
             splittedString[0] = splittedString[0].trim();
@@ -47,25 +49,40 @@ public class Weather {
         JSONObject wind = (JSONObject) obj.get("wind");
         JSONObject sys = (JSONObject) obj.get("sys");
         try {
-            windDeg = wind.get("deg").toString();
+            windDeg = (int) parseFloat(wind.get("deg").toString());
         } catch (Exception e) {
-            windDeg = "N/A";
+            windDeg = 0;
         }
 
-        tempMin = main.get("temp_min").toString();
-        tempMax = main.get("temp_max").toString();
-        temp = main.get("temp").toString();
-        humidity = main.get("humidity").toString();
+        tempMin = round(parseFloat(main.get("temp_min").toString()));
+        tempMax = round(parseFloat(main.get("temp_max").toString()));
+        temp = round(parseFloat(main.get("temp").toString()));
+        humidity = round(parseFloat(main.get("humidity").toString()));
         description = weather2.get("description").toString();
         country = sys.get("country").toString();
-        windSpeed = wind.get("speed").toString();
+        windSpeed = round(parseFloat(wind.get("speed").toString()));
         cityName = obj.get("name").toString();
-        byte[] b = cityName.getBytes("UTF-8");
-        cityName = new String(b, "UTF-8");
-        String emoji;
+        byte[] b = cityName.getBytes(StandardCharsets.UTF_8);
+        cityName = new String(b, StandardCharsets.UTF_8);
+        String result;
+        String emojiWeather = "";
+        String emojiCountry = ":flag_" + country.toLowerCase() + ":";
+        if (description.contains("snow"))
+            emojiWeather = "❄";
+        if (description.contains("cloud"))
+            emojiWeather = "☁️";
+        if (description.contains("sun") || description.contains("clear"))
+            emojiWeather = "🌞";
+        if (description.contains("rain"))
+            emojiWeather = "🌧️";
+        if (description.contains("haze") || description.contains("fog"))
+            emojiWeather = "🌫️";
 
-        String result = String.format("%s, %s - %s\ntemperature: %s\nmin: %s\nhigh: %s\nwind speed: %s direction of %s degrees\nHumidity: %s\n",
-                cityName, country, description, temp, tempMin, tempMax, windSpeed, windDeg, humidity);
+        result = String.format("%s, %s %s - %s %s\ntemperature: %s° C\nmin: %s° C\nhigh: %s° C\nwind speed: %s km/h direction of %s°\nHumidity: %s\n",
+                cityName, country, emojiCountry, description, emojiWeather, temp, tempMin, tempMax, windSpeed, windDeg, humidity);
+        out.write(result);
+        out.newLine();
+        out.close();
         System.out.println(result);
         return result;
     }
@@ -74,8 +91,7 @@ public class Weather {
         String encodedString = URLEncoder.encode(splittedString[0], "UTF-8");
         URL url = new URL(API_URL + encodedString + "," + splittedString[1] + API_KEY + UNITS);
         System.out.println(url);
-        JSONObject obj = getJSON(url);
-        return obj;
+        return getJSON(url);
     }
 
 
@@ -83,8 +99,7 @@ public class Weather {
         String encodedString = URLEncoder.encode(city, "UTF-8");
         URL url = new URL(API_URL + encodedString + API_KEY + UNITS);
         System.out.println(url);
-        JSONObject obj = getJSON(url);
-        return obj;
+        return getJSON(url);
     }
 
     public static void main(String[] args) throws IOException {
@@ -106,9 +121,7 @@ public class Weather {
             throw new RuntimeException("HttpResponseCode: " + responsecode);
         } else {
             Scanner sc = new Scanner(url.openStream());
-            while (sc.hasNext()) {
-                inline += sc.nextLine();
-            }
+            while (sc.hasNext()) inline += sc.nextLine();
             sc.close();
         }
         return new JSONObject(inline);
