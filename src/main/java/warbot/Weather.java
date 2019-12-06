@@ -1,3 +1,5 @@
+package warbot;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -29,9 +31,10 @@ public class Weather {
         int tempMin;
         int temp;
         int humidity;
+        String windDir = "";
         String description;
         String country;
-        int windDeg;
+        double windDeg;
         String cityName;
         int windSpeed;
         if (s.contains(",")) {
@@ -49,10 +52,11 @@ public class Weather {
         JSONObject wind = (JSONObject) obj.get("wind");
         JSONObject sys = (JSONObject) obj.get("sys");
         try {
-            windDeg = (int) parseFloat(wind.get("deg").toString());
+            windDeg = parseFloat(wind.get("deg").toString());
         } catch (Exception e) {
             windDeg = 0;
         }
+
 
         tempMin = round(parseFloat(main.get("temp_min").toString()));
         tempMax = round(parseFloat(main.get("temp_max").toString()));
@@ -64,6 +68,25 @@ public class Weather {
         cityName = obj.get("name").toString();
         byte[] b = cityName.getBytes(StandardCharsets.UTF_8);
         cityName = new String(b, StandardCharsets.UTF_8);
+
+        if (windDeg < 33.75 || windDeg > 348.75)
+            windDir = "North";
+        if (windDeg < 78.75 && windDeg > 33.75)
+            windDir = "North East";
+        if (windDeg < 123.75 && windDeg > 78.75)
+            windDir = "East";
+        if (windDeg < 168.75 && windDeg > 123.75)
+            windDir = "South East";
+        if (windDeg < 213.75 && windDeg > 168.75)
+            windDir = "South";
+        if (windDeg < 258.75 && windDeg > 213.75)
+            windDir = "South West";
+        if (windDeg < 303.75 && windDeg > 258.75)
+            windDir = "West";
+        if (windDeg < 348.75 && windDeg > 303.75)
+            windDir = "North West";
+
+
         String result;
         String emojiWeather = "";
         String emojiCountry = ":flag_" + country.toLowerCase() + ":";
@@ -77,9 +100,9 @@ public class Weather {
             emojiWeather = "🌧️";
         if (description.contains("haze") || description.contains("fog"))
             emojiWeather = "🌫️";
-
-        result = String.format("%s, %s %s - %s %s\ntemperature: %s° C\nmin: %s° C\nhigh: %s° C\nwind speed: %s km/h direction of %s°\nHumidity: %s\n",
-                cityName, country, emojiCountry, description, emojiWeather, temp, tempMin, tempMax, windSpeed, windDeg, humidity);
+        String encodedCity = URLEncoder.encode(cityName, "UTF-8");
+        result = String.format("%s, %s %s - %s %s\ntemperature: %s° C\nmin: %s° C\nhigh: %s° C\nwind speed: %s km/h direction of %s (%s°)\nHumidity: %s\n",
+                cityName, country, emojiCountry, description, emojiWeather, temp, tempMin, tempMax, windSpeed, windDir, windDeg, humidity);
         out.write(result);
         out.newLine();
         out.close();

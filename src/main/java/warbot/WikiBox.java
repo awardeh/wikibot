@@ -1,3 +1,5 @@
+package warbot;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
@@ -71,8 +73,3 @@ class WikiBox {
         return driver;
     }
 }
-
-//    public static void main(String[] args) throws Exception {
-//        scrapeWikiPic("Battle of the bulge");
-//    }
-//}
