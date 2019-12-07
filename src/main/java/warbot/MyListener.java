@@ -23,10 +23,19 @@ public class MyListener extends ListenerAdapter {
 
         MessageChannel channel = event.getChannel();
         //meme responses
+        if (Math.random() * 100 == 1) {
+            channel.sendMessage("<@" + author.getId() + "> based").queue();
+        }
         if (content.toLowerCase().startsWith("tch")) {
             channel.sendMessage("tch yourself").queue();
         }
+        if (content.toLowerCase().startsWith("cope")) {
+            message.addReaction(":cope:588146215779172378").queue();
+        }
 
+        if (content.toLowerCase().startsWith("based")) {
+            channel.sendMessage("based").queue();
+        }
         //commands
         if ((content.toLowerCase().startsWith("warbot")) || (content.startsWith("~w"))) {
             //remove the first part of string

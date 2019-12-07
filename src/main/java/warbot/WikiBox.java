@@ -26,13 +26,13 @@ class WikiBox {
 
     static void scrapeWikiPic(String input) throws Exception {
         //save user inputs in text file
+        System.setProperty("webdriver.gecko.driver", "./geckodriver");
         BufferedWriter out = new BufferedWriter(new FileWriter(INPUTS, true));
         out.write("pic " + input);
         out.newLine();
         out.close();
-
         FirefoxDriver driver = getPage(input);
-        WebDriverWait wait = new WebDriverWait(driver, 5);
+        WebDriverWait wait = new WebDriverWait(driver, 10);
         try {
             Thread.sleep(600);
             WebElement infobox = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("infobox")));

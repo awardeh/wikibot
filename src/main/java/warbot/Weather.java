@@ -17,7 +17,7 @@ import static java.lang.Math.round;
 
 public class Weather {
     private static final String API_URL = "http://api.openweathermap.org/data/2.5/weather?q=";
-    private static final String API_KEY = "&appid=";
+    private static final String API_KEY = "&appid=670e9b2846efd5fceb090a441cff4248";
     private static final String UNITS = "&units=metric";
     private static final String INPUTS = "./inputs.txt";
 
@@ -125,10 +125,6 @@ public class Weather {
         return getJSON(url);
     }
 
-    public static void main(String[] args) throws IOException {
-        String test = getWeather(" Linköping");
-        System.out.println(test);
-    }
 
     private static JSONObject getJSON(URL url) throws IOException {
 
