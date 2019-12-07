@@ -69,8 +69,14 @@ public class MyListener extends ListenerAdapter {
             //weather
             else if (newString.toLowerCase().startsWith("weather")) {
                 try {
-                    String weather = Weather.getWeather(newString.substring(newString.indexOf(" ")));
-                    channel.sendMessage(weather).queue();
+                    String weatherInput = newString.substring(newString.indexOf(" "));
+                    if (weatherInput.toLowerCase().contains("llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch")) {
+                        String weatherOut = Weather.getWeather("Llanfair");
+                        channel.sendMessage(weatherOut).queue();
+                    } else {
+                        String weatherOut = Weather.getWeather(weatherInput);
+                        channel.sendMessage(weatherOut).queue();
+                    }
                 } catch (IllegalArgumentException | IOException e) {
                     e.printStackTrace();
                     channel.sendMessage("not found, try being specific [format is either ~w weather toronto or ~w weather toronto, CA]").queue();
