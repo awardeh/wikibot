@@ -14,14 +14,13 @@ import java.nio.file.Paths;
 public class Bot extends ListenerAdapter {
 
     private static void startBot() throws LoginException, IOException {
-        String botToken = "";
-        Path path = Paths.get("./bottoken");
+        String botToken = ""; // intializes bot token
+        Path path = Paths.get("./bottoken"); //the path of the bottoken file should be in the project folder or in the jar folder
         try {
-            botToken = Files.readString(path);
+            botToken = Files.readString(path); //reads the bottoken
         } catch (NoSuchFileException e) {
             System.out.println("no bottoken");
-            Files.writeString(path, "");
-
+            Files.writeString(path, ""); //creates an emtpy bottoken file in case there is none
         }
         JDA api = new JDABuilder(botToken).build();
         MyListener listener = new MyListener();

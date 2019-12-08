@@ -19,40 +19,37 @@ import java.io.FileWriter;
 
 class WikiBox {
 
-    //    private static final String path = "C:\\Users\\aw\\IdeaProjects\\warbot\\test.jpg";
-    private static final String PATH = "./test.jpg";
-    private static final String INPUTS = "./inputs.txt";
+    private static final String PATH = "./screenshot.jpg";//path to screenshot
+    private static final String INPUTS = "./inputs.txt";//stores user inputs
 
 
     static void scrapeWikiPic(String input) throws Exception {
+        System.setProperty("webdriver.gecko.driver", "./geckodriver"); //path to geckdriver
         //save user inputs in text file
-        System.setProperty("webdriver.gecko.driver", "./geckodriver");
         BufferedWriter out = new BufferedWriter(new FileWriter(INPUTS, true));
         out.write("pic " + input);
         out.newLine();
         out.close();
+        //get the driver from the getPage method
         FirefoxDriver driver = getPage(input);
-        WebDriverWait wait = new WebDriverWait(driver, 10);
+        //set wait time for element to load to 2 seconds
+        WebDriverWait wait = new WebDriverWait(driver, 2);
         try {
-            Thread.sleep(600);
             WebElement infobox = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("infobox")));
             Screenshot myScreenshot = new AShot().shootingStrategy(ShootingStrategies.viewportPasting(100)).takeScreenshot(driver, infobox);
             ImageIO.write(myScreenshot.getImage(), "jpg", new File(PATH));
             driver.close();
-        } catch (Exception NoSuchElementException) {
+        } catch (NoSuchElementException e) {
             driver.close();
-            throw new NoSuchElementException("can't find element boss");
+            e.printStackTrace();
         }
     }
 
     static void scrapeWikiText(String input) throws Exception {
         FirefoxDriver driver = getPage(input);
         try {
-            Thread.sleep(1600);//wait for page load
+            Thread.sleep(2000);//wait for page load
             WebElement infobox = driver.findElementByClassName("infobox");
-            WebElement battleName = infobox.findElement(By.className("summary"));
-            WebElement partOf = infobox.findElement(By.xpath("//*[@id=\"mw-content-text\"]/div/div[4]/div[1]/table/tbody/tr[2]/td"));
-            WebElement results = infobox.findElement(By.xpath("//*[@id=\"mw-content-text\"]/div/div[4]/div[1]/table/tbody/tr[4]/td/table/tbody"));
         } catch (Exception NoSuchElementException) {
             driver.close();
             throw new NoSuchElementException("can't find element boss");
@@ -60,12 +57,16 @@ class WikiBox {
     }
 
     private static FirefoxDriver getPage(String input) throws InterruptedException {
+        //start firefox in headless mode
         FirefoxOptions options = new FirefoxOptions();
         options.setHeadless(true);
         FirefoxDriver driver = new FirefoxDriver(options);
+        //opens the wikipedia main page and finds the search box
         driver.get("http://en.wikipedia.org/");
         WebElement searchBox = driver.findElement(By.id("searchInput"));
+        //sends input
         searchBox.sendKeys(input);
+        //waits for search results to load and loads first result
         Thread.sleep(600);
         searchBox.sendKeys(Keys.ARROW_DOWN);
         searchBox.sendKeys(Keys.RETURN);

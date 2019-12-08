@@ -10,41 +10,55 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Scanner;
 
 import static java.lang.Float.parseFloat;
 import static java.lang.Math.round;
 
 public class Weather {
-    private static final String API_URL = "http://api.openweathermap.org/data/2.5/weather?q=";
-    private static final String API_KEY = "&appid=670e9b2846efd5fceb090a441cff4248";
+    private static final String API_SITE = "http://api.openweathermap.org/data/2.5/weather?q=";
+    private static final String API_KEY = "&appid=";
     private static final String UNITS = "&units=metric";
     private static final String INPUTS = "./inputs.txt";
-
+    private static final String OUTPUTS = "./outputs.txt";
 
     public static String getWeather(String s) throws IOException {
-        BufferedWriter out = new BufferedWriter(new FileWriter(INPUTS, true));
-        out.write("weather " + s);
-        out.newLine();
+
+        Path path = Paths.get("./weathertoken"); //the path of the bottoken file should be in the project folder or in the jar folder
+        String weatherToken; // intializes bot token
+        weatherToken = Files.readString(path); //reads the weatherapi
+
+
+        BufferedWriter in = new BufferedWriter(new FileWriter(INPUTS, true));
+        in.write("weather " + s);
+        in.newLine();
+        in.close();
+
         JSONObject obj;
+
         int tempMax;
         int tempMin;
         int temp;
         int humidity;
+        int windSpeed;
+        double windDeg;
+
         String windDir = "";
         String description;
         String country;
-        double windDeg;
         String cityName;
-        int windSpeed;
+
         if (s.contains(",")) {
             String[] splittedString = s.trim().split(",");
             splittedString[0] = splittedString[0].trim();
             splittedString[1] = splittedString[1].trim();
-            obj = openWeatherCountry(splittedString);
+            obj = openWeatherCountry(splittedString, weatherToken);
         } else {
             String input = s.trim();
-            obj = openWeather(input);
+            obj = openWeather(input, weatherToken);
         }
         JSONObject main = (JSONObject) obj.get("main");
         JSONArray weather = (JSONArray) obj.get("weather");
@@ -100,27 +114,31 @@ public class Weather {
             emojiWeather = "🌧️";
         if (description.contains("haze") || description.contains("fog"))
             emojiWeather = "🌫️";
-        String encodedCity = URLEncoder.encode(cityName, "UTF-8");
+        String encodedCity = URLEncoder.encode(cityName, StandardCharsets.UTF_8);
+
         result = String.format("%s, %s %s - %s %s\ntemperature: %s° C\nmin: %s° C\nhigh: %s° C\nwind speed: %s km/h direction of %s (%s°)\nHumidity: %s\n",
                 cityName, country, emojiCountry, description, emojiWeather, temp, tempMin, tempMax, windSpeed, windDir, windDeg, humidity);
+
+        BufferedWriter out = new BufferedWriter(new FileWriter(OUTPUTS, true));
         out.write(result);
         out.newLine();
         out.close();
         System.out.println(result);
+
         return result;
     }
 
-    private static JSONObject openWeatherCountry(String[] splittedString) throws IOException {
-        String encodedString = URLEncoder.encode(splittedString[0], "UTF-8");
-        URL url = new URL(API_URL + encodedString + "," + splittedString[1] + API_KEY + UNITS);
+    private static JSONObject openWeatherCountry(String[] splittedString, String weatherToken) throws IOException {
+        String encodedString = URLEncoder.encode(splittedString[0], StandardCharsets.UTF_8);
+        URL url = new URL(API_SITE + encodedString + "," + splittedString[1] + API_KEY + weatherToken + UNITS);
         System.out.println(url);
         return getJSON(url);
     }
 
 
-    private static JSONObject openWeather(String city) throws IOException {
-        String encodedString = URLEncoder.encode(city, "UTF-8");
-        URL url = new URL(API_URL + encodedString + API_KEY + UNITS);
+    private static JSONObject openWeather(String city, String weatherToken) throws IOException {
+        String encodedString = URLEncoder.encode(city, StandardCharsets.UTF_8);
+        URL url = new URL(API_SITE + encodedString + API_KEY + weatherToken + UNITS);
         System.out.println(url);
         return getJSON(url);
     }
@@ -140,7 +158,7 @@ public class Weather {
             throw new RuntimeException("HttpResponseCode: " + responsecode);
         } else {
             Scanner sc = new Scanner(url.openStream());
-            while (sc.hasNext()) inline += sc.nextLine();
+            while (sc.hasNext()) inline.concat(sc.nextLine());
             sc.close();
         }
         return new JSONObject(inline);

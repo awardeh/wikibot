@@ -11,48 +11,45 @@ import java.io.File;
 import java.io.IOException;
 
 public class MyListener extends ListenerAdapter {
-    //    private static final String PATH = "C:\\Users\\aw\\IdeaProjects\\warbot\\test.jpg";
-    private static final String PATH = "./test.jpg";
+    private static final String PATH = "./screenshot.jpg"; //path to screenshot
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         User author = event.getAuthor();
-        if (author.isBot()) return;
+        if (author.isBot()) return; // ignores messages from bots
+
         Message message = event.getMessage();
         String content = message.getContentRaw();
-
         MessageChannel channel = event.getChannel();
+
         //meme responses
         if (Math.random() * 100 == 1) {
-            channel.sendMessage("<@" + author.getId() + "> based").queue();
+            channel.sendMessage("<@" + author.getId() + "> based").queue(); //1/100 chance of saying based
         }
         if (content.toLowerCase().startsWith("tch")) {
-            channel.sendMessage("tch yourself").queue();
+            channel.sendMessage("tch yourself").queue(); //annoys kratos
         }
         if (content.toLowerCase().startsWith("cope")) {
-            message.addReaction(":cope:588146215779172378").queue();
+            message.addReaction(":cope:588146215779172378").queue(); //reacts with the cope emote to messages starting with cope
         }
 
-        if (content.toLowerCase().startsWith("based")) {
-            channel.sendMessage("based").queue();
+        if (content.toLowerCase().contains("based")) {
+            channel.sendMessage("based").queue(); //responds with based when someone says  based
         }
         //commands
-        if ((content.toLowerCase().startsWith("warbot")) || (content.startsWith("~w"))) {
+        if (((content.startsWith("~")))) {
             //remove the first part of string
-            String newString = content.substring(content.indexOf(" ") + 1);
-            if (newString.toLowerCase().contains("gay")) {
-                channel.sendMessage("<@" + author.getId() + "> is gay").queue();
-            }
+            String newString = content.substring(content.indexOf("~") + 1);
 
             //rng answers aka 8ball
-            else if (newString.toLowerCase().startsWith("question")) {
+            if (newString.toLowerCase().startsWith("question")) {
                 channel.sendMessage(eightBall()).queue();
             }
             //screenshot wikipedia infobox
-            else if (newString.toLowerCase().startsWith("pic ")) {
+            else if (newString.toLowerCase().startsWith("pic")) {
                 channel = event.getChannel();
                 try {
-                    WikiBox.scrapeWikiPic(newString.substring(newString.indexOf(" ") + 1));
+                    WikiBox.scrapeWikiPic(newString.substring(newString.indexOf(" ")));
                     File file = new File(PATH);
                     channel.sendFile(file).queue();
                     file.delete();
@@ -70,6 +67,7 @@ public class MyListener extends ListenerAdapter {
             else if (newString.toLowerCase().startsWith("weather")) {
                 try {
                     String weatherInput = newString.substring(newString.indexOf(" "));
+                    //made this since everyone wants to know the weather of llanfair for some reason
                     if (weatherInput.toLowerCase().contains("llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch")) {
                         String weatherOut = Weather.getWeather("Llanfair");
                         channel.sendMessage(weatherOut).queue();
@@ -100,6 +98,7 @@ public class MyListener extends ListenerAdapter {
                     System.exit(0);
                 }
 
+            //lists commands
             if (newString.toLowerCase().startsWith("help")) {
                 channel.sendMessage("WIP current commands:\npic [~w pic battle of the bulge]\nquestion[~w question is this bot good?]," +
                         "\nweather [ ~w weather toronto or ~w weather toronto, CA]").queue();
