@@ -33,7 +33,7 @@ class WikiBox {
         //get the driver from the getPage method
         FirefoxDriver driver = getPage(input);
         //set wait time for element to load to 2 seconds
-        WebDriverWait wait = new WebDriverWait(driver, 2);
+        WebDriverWait wait = new WebDriverWait(driver, 5);
         try {
             WebElement infobox = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("infobox")));
             Screenshot myScreenshot = new AShot().shootingStrategy(ShootingStrategies.viewportPasting(100)).takeScreenshot(driver, infobox);
@@ -45,21 +45,10 @@ class WikiBox {
         }
     }
 
-    static void scrapeWikiText(String input) throws Exception {
-        FirefoxDriver driver = getPage(input);
-        try {
-            Thread.sleep(2000);//wait for page load
-            WebElement infobox = driver.findElementByClassName("infobox");
-        } catch (Exception NoSuchElementException) {
-            driver.close();
-            throw new NoSuchElementException("can't find element boss");
-        }
-    }
-
     private static FirefoxDriver getPage(String input) throws InterruptedException {
         //start firefox in headless mode
         FirefoxOptions options = new FirefoxOptions();
-        options.setHeadless(true);
+//        options.setHeadless(true);
         FirefoxDriver driver = new FirefoxDriver(options);
         //opens the wikipedia main page and finds the search box
         driver.get("http://en.wikipedia.org/");

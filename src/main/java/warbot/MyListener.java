@@ -5,7 +5,6 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import org.openqa.selenium.NoSuchElementException;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,9 +22,6 @@ public class MyListener extends ListenerAdapter {
         MessageChannel channel = event.getChannel();
 
         //meme responses
-        if (Math.random() * 100 == 1) {
-            channel.sendMessage("<@" + author.getId() + "> based").queue(); //1/100 chance of saying based
-        }
         if (content.toLowerCase().startsWith("tch")) {
             channel.sendMessage("tch yourself").queue(); //annoys kratos
         }
@@ -33,8 +29,9 @@ public class MyListener extends ListenerAdapter {
             message.addReaction(":cope:588146215779172378").queue(); //reacts with the cope emote to messages starting with cope
         }
 
-        if (content.toLowerCase().contains("based")) {
+        if (content.toLowerCase().startsWith("based") || content.toLowerCase().contains(":based:") || content.toLowerCase().contains(" based")) {
             channel.sendMessage("based").queue(); //responds with based when someone says  based
+            message.addReaction(":based:653403140829478958").queue();
         }
         //commands
         if (((content.startsWith("~")))) {
@@ -42,33 +39,33 @@ public class MyListener extends ListenerAdapter {
             String newString = content.substring(content.indexOf("~") + 1);
 
             //rng answers aka 8ball
-            if (newString.toLowerCase().startsWith("question")) {
+            if (newString.toLowerCase().startsWith("question") || newString.toLowerCase().startsWith("q ")) {
                 channel.sendMessage(eightBall()).queue();
             }
             //screenshot wikipedia infobox
-            else if (newString.toLowerCase().startsWith("pic")) {
+            else if (newString.toLowerCase().startsWith("pic") || newString.toLowerCase().startsWith("p ")) {
                 channel = event.getChannel();
-                try {
-                    WikiBox.scrapeWikiPic(newString.substring(newString.indexOf(" ")));
+                MessageChannel finalChannel = channel;
+                new Thread(() -> {
+                    try {
+                        WikiBox.scrapeWikiPic(newString.substring(newString.indexOf(" ")));
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     File file = new File(PATH);
-                    channel.sendFile(file).queue();
+                    finalChannel.sendFile(file).queue();
                     file.delete();
-                } catch (NoSuchElementException e) {
-                    e.printStackTrace();
-                    channel.sendMessage("can't find infobox").queue();
-                    message.addReaction(":ragescream:621200977671749652").queue();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    channel.sendMessage("dummy thicc error").queue();
-                    message.addReaction(":ragescream:621200977671749652").queue();
-                }
+                    return;
+                }).start();
+
             }
             //weather
-            else if (newString.toLowerCase().startsWith("weather")) {
+            else if (newString.toLowerCase().startsWith("weather") || newString.toLowerCase().startsWith("w ")) {
                 try {
                     String weatherInput = newString.substring(newString.indexOf(" "));
                     //made this since everyone wants to know the weather of llanfair for some reason
-                    if (weatherInput.toLowerCase().contains("llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch")) {
+                    if (weatherInput.toLowerCase().contains("llanfair")) {
                         String weatherOut = Weather.getWeather("Llanfair");
                         channel.sendMessage(weatherOut).queue();
                     } else {
@@ -80,7 +77,7 @@ public class MyListener extends ListenerAdapter {
                     channel.sendMessage("not found, try being specific [format is either ~w weather toronto or ~w weather toronto, CA]").queue();
                     message.addReaction(":ragescream:621200977671749652").queue();
                 } catch (Exception e) {
-                    channel.sendMessage("dummy thicc error");
+                    channel.sendMessage("dummy thicc error").queue();
                     message.addReaction(":ragescream:621200977671749652").queue();
                 }
             }
@@ -88,7 +85,7 @@ public class MyListener extends ListenerAdapter {
             if (author.getId().equals("534564220704915456") || author.getId().equals("108312797162541056"))
                 if (newString.startsWith("off yourself")) {
                     channel = event.getChannel();
-                    channel.sendMessage("The sweet release of death <:woo:633411508180877339>").queue();
+                    channel.sendMessage("The sweet release of powering off <:woo:633411508180877339>").queue();
                     message.addReaction(":woo:633411508180877339").queue();
                     try {
                         Thread.sleep(100);
@@ -100,8 +97,8 @@ public class MyListener extends ListenerAdapter {
 
             //lists commands
             if (newString.toLowerCase().startsWith("help")) {
-                channel.sendMessage("WIP current commands:\npic [~w pic battle of the bulge]\nquestion[~w question is this bot good?]," +
-                        "\nweather [ ~w weather toronto or ~w weather toronto, CA]").queue();
+                channel.sendMessage("WIP current commands:\npic [~p battle of the bulge]\nquestion[~q is this bot good?]," +
+                        "\nweather [ ~w toronto or ~w toronto, CA]").queue();
             }
 
         }
@@ -110,41 +107,9 @@ public class MyListener extends ListenerAdapter {
 
 
     private String eightBall() {
-        String result = "";
+        final String[] ANSWERS = {"no", "yes", "bruh no way", "yes obviously", "maybe", "not sure tbh", "shut up", "I don't think so", "If you believe", "sure"};
         int x = (int) (10.0 * Math.random());
-        switch (x) {
-            case 0:
-                result = "no";
-                break;
-            case 1:
-                result = "yes";
-                break;
-            case 2:
-                result = "bruh no way";
-                break;
-            case 3:
-                result = "yes obviously";
-                break;
-            case 4:
-                result = "maybe";
-                break;
-            case 5:
-                result = "not sure tbh";
-                break;
-            case 6:
-                result = "shut up";
-                break;
-            case 7:
-                result = "I don't think so";
-                break;
-            case 8:
-                result = "if you believe";
-                break;
-            case 9:
-                result = "sure";
-                break;
-        }
-        return result;
+        return ANSWERS[x];
 
     }
 }

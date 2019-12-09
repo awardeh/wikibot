@@ -158,10 +158,15 @@ public class Weather {
             throw new RuntimeException("HttpResponseCode: " + responsecode);
         } else {
             Scanner sc = new Scanner(url.openStream());
-            while (sc.hasNext()) inline.concat(sc.nextLine());
+            while (sc.hasNext()) inline += (sc.nextLine());
             sc.close();
         }
         return new JSONObject(inline);
 
+    }
+
+    public static void main(String[] args) throws IOException {
+        String string = getWeather("Toronto");
+        System.out.println(string);
     }
 }
