@@ -48,7 +48,7 @@ class WikiBox {
     private static FirefoxDriver getPage(String input) throws InterruptedException {
         //start firefox in headless mode
         FirefoxOptions options = new FirefoxOptions();
-//        options.setHeadless(true);
+        options.setHeadless(true);
         FirefoxDriver driver = new FirefoxDriver(options);
         //opens the wikipedia main page and finds the search box
         driver.get("http://en.wikipedia.org/");
