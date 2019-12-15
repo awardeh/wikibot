@@ -64,15 +64,13 @@ class WikiBox {
             driver.quit();
             Elements infobox = document.getElementsByClass("infobox");
             Elements date = infobox.get(0).getElementsByTag("tr");
-            StringBuilder infoboxText = new StringBuilder();
-            infoboxText.append(Jsoup.parse(date.get(0).toString()).text()).append("\n\n");
-            infoboxText.append(Jsoup.parse(date.get(1).toString()).text()).append("\n\n");
-            infoboxText.append(Jsoup.parse(date.get(2).toString()).text()).append("\n\n");
-            infoboxText.append(Jsoup.parse(date.get(4).toString()).text()).append("\n\n");
-            infoboxText.append(Jsoup.parse(date.get(5).toString()).text()).append("\n\n");
-            infoboxText.append(Jsoup.parse(date.get(6).toString()).text()).append("\n\n");
-            infoboxText.append(Jsoup.parse(date.get(8).toString()).text());
-            return infoboxText.toString();
+            return Jsoup.parse(date.get(0).toString()).text() + "\n\n" +
+                    Jsoup.parse(date.get(1).toString()).text() + "\n\n" +
+                    Jsoup.parse(date.get(2).toString()).text() + "\n\n" +
+                    Jsoup.parse(date.get(4).toString()).text() + "\n\n" +
+                    Jsoup.parse(date.get(5).toString()).text() + "\n\n" +
+                    Jsoup.parse(date.get(6).toString()).text() + "\n\n" +
+                    Jsoup.parse(date.get(8).toString()).text();
         } else {
             driver.quit();
             throw new NoSuchElementException("not found boss");
