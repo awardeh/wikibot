@@ -83,7 +83,7 @@ class WikiBox {
     private static ChromeDriver getPage(String input) throws InterruptedException {
         //start firefox in headless mode
         ChromeOptions options = new ChromeOptions();
-        options.setBinary("/usr/bin/chromium");
+        options.setBinary("/usr/bin/chromium-browser");
         options.setHeadless(true);
         ChromeDriver driver = new ChromeDriver(options);
         //opens the wikipedia main page and finds the search box
