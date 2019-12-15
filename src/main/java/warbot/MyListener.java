@@ -5,12 +5,14 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.openqa.selenium.NoSuchElementException;
 
 import java.io.File;
 import java.io.IOException;
 
 public class MyListener extends ListenerAdapter {
     private static final String PATH = "./screenshot.jpg"; //path to screenshot
+    private static final String PREFIX = "~";
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
@@ -33,35 +35,56 @@ public class MyListener extends ListenerAdapter {
             channel.sendMessage("based").queue(); //responds with based when someone says  based
             message.addReaction(":based:653403140829478958").queue();
         }
+
         //commands
-        if (((content.startsWith("~")))) {
-            //remove the first part of string
-            String newString = content.substring(content.indexOf("~") + 1);
+
+        //remove the first part of string
+        if (content.startsWith(PREFIX)) {
+            String newString = content.substring(content.indexOf(PREFIX) + 1);
 
             //rng answers aka 8ball
             if (newString.toLowerCase().startsWith("question") || newString.toLowerCase().startsWith("q ")) {
                 channel.sendMessage(eightBall()).queue();
             }
-            //screenshot wikipedia infobox
-            else if (newString.toLowerCase().startsWith("pic") || newString.toLowerCase().startsWith("p ")) {
-                channel = event.getChannel();
+
+//            WIP wiki command
+            else if (newString.toLowerCase().startsWith("w") || newString.toLowerCase().startsWith("w ")) {
                 MessageChannel finalChannel = channel;
                 new Thread(() -> {
                     try {
+                        finalChannel.sendMessage("```" + WikiBox.scrapeWikiText(newString.substring(newString.indexOf(" "))) + "```").queue();
+                    } catch (NoSuchElementException e) {
+                        e.printStackTrace();
+                        finalChannel.sendMessage("no infobox found").queue();
+                        return;
+                    } catch (InterruptedException | IOException e) {
+                        e.printStackTrace();
+                        finalChannel.sendMessage("dummy thicc error").queue();
+                        return;
+                    }
+                }).start();
+            }
+
+            //screenshot wikipedia infobox
+            else if (newString.toLowerCase().startsWith("pic ") || newString.toLowerCase().startsWith("p ")) {
+                MessageChannel finalChannel = event.getChannel();
+                new Thread(() -> {
+                    try {
                         WikiBox.scrapeWikiPic(newString.substring(newString.indexOf(" ")));
+                        File file = new File(PATH);
+                        finalChannel.sendFile(file).queue();
+                        file.delete();
 
                     } catch (Exception e) {
                         e.printStackTrace();
+                        finalChannel.sendMessage("Not Found").queue();
+                        return;
                     }
-                    File file = new File(PATH);
-                    finalChannel.sendFile(file).queue();
-                    file.delete();
-                    return;
                 }).start();
 
             }
             //weather
-            else if (newString.toLowerCase().startsWith("weather") || newString.toLowerCase().startsWith("w ")) {
+            else if (newString.toLowerCase().startsWith("temp ") || newString.toLowerCase().startsWith("t ")) {
                 try {
                     String weatherInput = newString.substring(newString.indexOf(" "));
                     //made this since everyone wants to know the weather of llanfair for some reason
@@ -74,13 +97,14 @@ public class MyListener extends ListenerAdapter {
                     }
                 } catch (IllegalArgumentException | IOException e) {
                     e.printStackTrace();
-                    channel.sendMessage("not found, try being specific [format is either ~w weather toronto or ~w weather toronto, CA]").queue();
+                    channel.sendMessage("not found, try being specific [format is either ~t toronto or ~t toronto, CA]").queue();
                     message.addReaction(":ragescream:621200977671749652").queue();
                 } catch (Exception e) {
                     channel.sendMessage("dummy thicc error").queue();
                     message.addReaction(":ragescream:621200977671749652").queue();
                 }
             }
+
             //turn off
             if (author.getId().equals("534564220704915456") || author.getId().equals("108312797162541056"))
                 if (newString.startsWith("off yourself")) {
@@ -97,8 +121,8 @@ public class MyListener extends ListenerAdapter {
 
             //lists commands
             if (newString.toLowerCase().startsWith("help")) {
-                channel.sendMessage("WIP current commands:\npic [~p battle of the bulge]\nquestion[~q is this bot good?]," +
-                        "\nweather [ ~w toronto or ~w toronto, CA]").queue();
+                channel.sendMessage("WIP current commands:\nscreenshot infobox: ~p [page] (only works on pages with infobox)\n8ball/question: ~q [question]," +
+                        "\nweather: ~t toronto or ~t toronto, CA\nWiki: ~w [page] (only works on pages with infobox)").queue();
             }
 
         }
