@@ -50,7 +50,6 @@ class WikiBox {
     }
 
     public static String scrapeWikiText(String input) throws IOException, InterruptedException {
-        System.setProperty("webdriver.gecko.driver", "./geckodriver"); //path to geckdriver
         //save user inputs in text file
         logInputText(input);
         //get the driver from the getPage method

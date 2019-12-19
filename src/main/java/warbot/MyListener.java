@@ -40,19 +40,19 @@ public class MyListener extends ListenerAdapter {
 
         //remove the first part of string
         if (content.startsWith(PREFIX)) {
-            String newString = content.substring(content.indexOf(PREFIX) + 1);
+            String input = content.substring(content.indexOf(PREFIX) + 1).toLowerCase();
 
             //rng answers aka 8ball
-            if (newString.toLowerCase().startsWith("question") || newString.toLowerCase().startsWith("q ")) {
+            if (input.startsWith("question ") || input.startsWith("q ")) {
                 channel.sendMessage(eightBall()).queue();
             }
 
 //            WIP wiki command
-            else if (newString.toLowerCase().startsWith("w") || newString.toLowerCase().startsWith("w ")) {
+            else if (input.startsWith("wiki ") || input.startsWith("w ")) {
                 MessageChannel finalChannel = channel;
                 new Thread(() -> {
                     try {
-                        finalChannel.sendMessage("```" + WikiBox.scrapeWikiText(newString.substring(newString.indexOf(" "))) + "```").queue();
+                        finalChannel.sendMessage("```" + WikiBox.scrapeWikiText(input.substring(input.indexOf(" "))) + "```").queue();
                     } catch (NoSuchElementException e) {
                         e.printStackTrace();
                         finalChannel.sendMessage("no infobox found").queue();
@@ -66,11 +66,11 @@ public class MyListener extends ListenerAdapter {
             }
 
             //screenshot wikipedia infobox
-            else if (newString.toLowerCase().startsWith("pic ") || newString.toLowerCase().startsWith("p ")) {
+            else if (input.startsWith("pic ") || input.startsWith("p ")) {
                 MessageChannel finalChannel = event.getChannel();
                 new Thread(() -> {
                     try {
-                        WikiBox.scrapeWikiPic(newString.substring(newString.indexOf(" ")));
+                        WikiBox.scrapeWikiPic(input.substring(input.indexOf(" ")));
                         File file = new File(PATH);
                         finalChannel.sendFile(file).queue();
                         file.delete();
@@ -84,11 +84,11 @@ public class MyListener extends ListenerAdapter {
 
             }
             //weather
-            else if (newString.toLowerCase().startsWith("temp ") || newString.toLowerCase().startsWith("t ")) {
+            else if (input.startsWith("temp ") || input.startsWith("t ")) {
                 try {
-                    String weatherInput = newString.substring(newString.indexOf(" "));
+                    String weatherInput = input.substring(input.indexOf(" "));
                     //made this since everyone wants to know the weather of llanfair for some reason
-                    if (weatherInput.toLowerCase().contains("llanfair")) {
+                    if (weatherInput.contains("llanfair")) {
                         String weatherOut = Weather.getWeather("Llanfair");
                         channel.sendMessage(weatherOut).queue();
                     } else {
@@ -107,7 +107,7 @@ public class MyListener extends ListenerAdapter {
 
             //turn off
             if (author.getId().equals("534564220704915456") || author.getId().equals("108312797162541056"))
-                if (newString.startsWith("off yourself")) {
+                if (input.startsWith("off yourself")) {
                     channel = event.getChannel();
                     channel.sendMessage("The sweet release of powering off <:woo:633411508180877339>").queue();
                     message.addReaction(":woo:633411508180877339").queue();
@@ -120,7 +120,7 @@ public class MyListener extends ListenerAdapter {
                 }
 
             //lists commands
-            if (newString.toLowerCase().startsWith("help")) {
+            if (input.startsWith("help") || input.startsWith("h ")) {
                 channel.sendMessage("WIP current commands:\nscreenshot infobox: ~p [page] (only works on pages with infobox)\n8ball/question: ~q [question]," +
                         "\nweather: ~t toronto or ~t toronto, CA\nWiki: ~w [page] (only works on pages with infobox)").queue();
             }
