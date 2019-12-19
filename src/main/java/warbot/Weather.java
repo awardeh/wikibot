@@ -114,7 +114,7 @@ public class Weather {
             emojiWeather = "🌧️";
         if (description.contains("haze") || description.contains("fog"))
             emojiWeather = "🌫️";
-        String encodedCity = URLEncoder.encode(cityName, StandardCharsets.UTF_8);
+//        String encodedCity = URLEncoder.encode(cityName, StandardCharsets.UTF_8);
 
         result = String.format("%s, %s %s - %s %s\ntemperature: %s° C\nmin: %s° C\nhigh: %s° C\nwind speed: %s km/h direction of %s (%s°)\nHumidity: %s\n",
                 cityName, country, emojiCountry, description, emojiWeather, temp, tempMin, tempMax, windSpeed, windDir, windDeg, humidity);
@@ -128,9 +128,9 @@ public class Weather {
         return result;
     }
 
-    private static JSONObject openWeatherCountry(String[] splittedString, String weatherToken) throws IOException {
-        String encodedString = URLEncoder.encode(splittedString[0], StandardCharsets.UTF_8);
-        URL url = new URL(API_SITE + encodedString + "," + splittedString[1] + API_KEY + weatherToken + UNITS);
+    private static JSONObject openWeatherCountry(String[] splitString, String weatherToken) throws IOException {
+        String encodedString = URLEncoder.encode(splitString[0], StandardCharsets.UTF_8);
+        URL url = new URL(API_SITE + encodedString + "," + splitString[1] + API_KEY + weatherToken + UNITS);
         System.out.println(url);
         return getJSON(url);
     }

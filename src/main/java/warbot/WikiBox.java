@@ -63,13 +63,13 @@ class WikiBox {
             driver.quit();
             Elements infobox = document.getElementsByClass("infobox");
             Elements date = infobox.get(0).getElementsByTag("tr");
-            String myString = "";
+            StringBuilder myString = new StringBuilder();
             for (int i = 0; i < date.size() / 2; i++) {
                 if (!Jsoup.parse(date.get(i).toString()).text().isBlank()) {
-                    myString += Jsoup.parse(date.get(i).toString()).text() + "\n\n";
+                    myString.append(Jsoup.parse(date.get(i).toString()).text()).append("\n\n");
                 }
             }
-            return myString;
+            return myString.toString();
         } else {
             driver.quit();
             throw new NoSuchElementException("not found boss");
