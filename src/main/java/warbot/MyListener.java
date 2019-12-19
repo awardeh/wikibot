@@ -47,7 +47,7 @@ public class MyListener extends ListenerAdapter {
                 channel.sendMessage(eightBall()).queue();
             }
 
-//            WIP wiki command
+            //WIP wiki command
             else if (input.startsWith("wiki ") || input.startsWith("w ")) {
                 MessageChannel finalChannel = channel;
                 new Thread(() -> {

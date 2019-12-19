@@ -63,13 +63,13 @@ class WikiBox {
             driver.quit();
             Elements infobox = document.getElementsByClass("infobox");
             Elements date = infobox.get(0).getElementsByTag("tr");
-            return Jsoup.parse(date.get(0).toString()).text() + "\n\n" +
-                    Jsoup.parse(date.get(1).toString()).text() + "\n\n" +
-                    Jsoup.parse(date.get(2).toString()).text() + "\n\n" +
-                    Jsoup.parse(date.get(4).toString()).text() + "\n\n" +
-                    Jsoup.parse(date.get(5).toString()).text() + "\n\n" +
-                    Jsoup.parse(date.get(6).toString()).text() + "\n\n" +
-                    Jsoup.parse(date.get(8).toString()).text();
+            String myString = "";
+            for (int i = 0; i < date.size() / 2; i++) {
+                if (!Jsoup.parse(date.get(i).toString()).text().isBlank()) {
+                    myString += Jsoup.parse(date.get(i).toString()).text() + "\n\n";
+                }
+            }
+            return myString;
         } else {
             driver.quit();
             throw new NoSuchElementException("not found boss");
@@ -80,7 +80,6 @@ class WikiBox {
     private static ChromeDriver getPage(String input) throws InterruptedException {
         //start firefox in headless mode
         ChromeOptions options = new ChromeOptions();
-        options.setBinary("/usr/bin/chromium-browser");
         options.setHeadless(true);
         ChromeDriver driver = new ChromeDriver(options);
         //opens the wikipedia main page and finds the search box
