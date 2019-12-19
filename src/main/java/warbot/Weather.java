@@ -82,6 +82,7 @@ public class Weather {
         cityName = obj.get("name").toString();
         byte[] b = cityName.getBytes(StandardCharsets.UTF_8);
         cityName = new String(b, StandardCharsets.UTF_8);
+        int windChill = (int) round(35.74 + 0.6215 * temp + (0.4275 * temp - 35.75) * Math.pow(windSpeed, 0.16));
 
         if (windDeg < 33.75 || windDeg > 348.75)
             windDir = "North";
@@ -101,7 +102,6 @@ public class Weather {
             windDir = "North West";
 
 
-        String result;
         String emojiWeather = "";
         String emojiCountry = ":flag_" + country.toLowerCase() + ":";
         if (description.contains("snow"))
@@ -116,8 +116,8 @@ public class Weather {
             emojiWeather = "🌫️";
 //        String encodedCity = URLEncoder.encode(cityName, StandardCharsets.UTF_8);
 
-        result = String.format("%s, %s %s - %s %s\ntemperature: %s° C\nmin: %s° C\nhigh: %s° C\nwind speed: %s km/h direction of %s (%s°)\nHumidity: %s\n",
-                cityName, country, emojiCountry, description, emojiWeather, temp, tempMin, tempMax, windSpeed, windDir, windDeg, humidity);
+        String result = String.format("%s, %s %s - %s %s\ntemperature: %s° C\nfeels like: %s° C\nmin: %s° C\nhigh: %s° C\nwind speed: %s km/h direction of %s (%s°)\nHumidity: %s\n",
+                cityName, country, emojiCountry, description, emojiWeather, temp, windChill, tempMin, tempMax, windSpeed, windDir, windDeg, humidity);
 
         BufferedWriter out = new BufferedWriter(new FileWriter(OUTPUTS, true));
         out.write(result);
