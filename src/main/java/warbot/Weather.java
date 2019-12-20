@@ -16,6 +16,7 @@ import java.nio.file.Paths;
 import java.util.Scanner;
 
 import static java.lang.Float.parseFloat;
+import static java.lang.Math.pow;
 import static java.lang.Math.round;
 
 public class Weather {
@@ -39,18 +40,18 @@ public class Weather {
 
         JSONObject obj;
 
-        int tempMax;
-        int tempMin;
-        int temp;
-        int humidity;
-        int windSpeed;
-        double windDeg;
 
         String windDir = "";
         String description;
         String country;
         String cityName;
-
+        float windDeg;
+        float tempMin;
+        float tempMax;
+        float humidity;
+        float temp;
+        float windSpeed;
+        double windChill;
         if (s.contains(",")) {
             String[] splittedString = s.trim().split(",");
             splittedString[0] = splittedString[0].trim();
@@ -72,18 +73,17 @@ public class Weather {
         }
 
 
-        tempMin = round(parseFloat(main.get("temp_min").toString()));
-        tempMax = round(parseFloat(main.get("temp_max").toString()));
-        temp = round(parseFloat(main.get("temp").toString()));
-        humidity = round(parseFloat(main.get("humidity").toString()));
+        tempMin = parseFloat(main.get("temp_min").toString());
+        tempMax = parseFloat(main.get("temp_max").toString());
+        temp = parseFloat(main.get("temp").toString());
+        windSpeed = parseFloat(wind.get("speed").toString());
+        windChill = 35.74 + 0.6215 * temp - 35.75 * pow(windSpeed, 0.16) + 0.3965 * temp * Math.pow(windSpeed, 0.16);
+        humidity = parseFloat(main.get("humidity").toString());
         description = weather2.get("description").toString();
         country = sys.get("country").toString();
-        windSpeed = round(parseFloat(wind.get("speed").toString()));
         cityName = obj.get("name").toString();
         byte[] b = cityName.getBytes(StandardCharsets.UTF_8);
         cityName = new String(b, StandardCharsets.UTF_8);
-        int windChill = (int) round(35.74 + 0.6215 * temp + (0.4275 * temp - 35.75) * Math.pow(windSpeed, 0.16));
-
         if (windDeg < 33.75 || windDeg > 348.75)
             windDir = "North";
         if (windDeg < 78.75 && windDeg > 33.75)
@@ -116,8 +116,8 @@ public class Weather {
             emojiWeather = "🌫️";
 //        String encodedCity = URLEncoder.encode(cityName, StandardCharsets.UTF_8);
 
-        String result = String.format("%s, %s %s - %s %s\ntemperature: %s° C\nfeels like: %s° C\nmin: %s° C\nhigh: %s° C\nwind speed: %s km/h direction of %s (%s°)\nHumidity: %s\n",
-                cityName, country, emojiCountry, description, emojiWeather, temp, windChill, tempMin, tempMax, windSpeed, windDir, windDeg, humidity);
+        String result = String.format("%s, %s %s - %s %s\nTemperature: %s° C\nFeels like: %s° C\nLow: %s° C\nHigh: %s° C\nWind speed: %s km/h direction of %s (%s°)\nHumidity: %s\n",
+                cityName, country, emojiCountry, description, emojiWeather, round(temp), round(windChill), round(tempMin), round(tempMax), round(windSpeed), windDir, round(windDeg), humidity);
 
         BufferedWriter out = new BufferedWriter(new FileWriter(OUTPUTS, true));
         out.write(result);

@@ -14,6 +14,7 @@ public class MyListener extends ListenerAdapter {
     private static final String PATH = "./screenshot.jpg"; //path to screenshot
     private static final String PREFIX = "~";
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         User author = event.getAuthor();
