@@ -49,7 +49,7 @@ class WikiBox {
         }
     }
 
-    public static String scrapeWikiText(String input) throws IOException, InterruptedException {
+    public static String scrapeWikiText(String input) throws IOException {
         //save user inputs in text file
         logInputText(input);
         //get the driver from the getPage method
@@ -77,7 +77,7 @@ class WikiBox {
     }
 
 
-    private static ChromeDriver getPage(String input) throws InterruptedException {
+    private static ChromeDriver getPage(String input) {
         //start firefox in headless mode
         ChromeOptions options = new ChromeOptions();
         options.setHeadless(true);
@@ -109,7 +109,7 @@ class WikiBox {
         out.close();
     }
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException {
         System.out.println(scrapeWikiText("Battle of the Bulge"));
     }
 }
