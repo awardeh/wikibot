@@ -57,7 +57,7 @@ public class MyListener extends ListenerAdapter {
                     } catch (NoSuchElementException e) {
                         e.printStackTrace();
                         finalChannel.sendMessage("no infobox found").queue();
-                    } catch (InterruptedException | IOException e) {
+                    } catch (IOException e) {
                         e.printStackTrace();
                         finalChannel.sendMessage("dummy thicc error").queue();
                     }
