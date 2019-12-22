@@ -25,13 +25,13 @@ class WikiBox {
     private static final String INPUTS = "./inputs.txt";//stores user inputs
 
 
-    static void scrapeWikiPic(String input) throws IOException, InterruptedException {
+    static void scrapeWikiPic(String input) throws Exception {
         //save user inputs in text file
         logInputPic((input));
         //get the driver from the getPage method
         ChromeDriver driver = getPage(input);
         //set wait time for element to load to 2 seconds
-        WebDriverWait wait = new WebDriverWait(driver, 5);
+        WebDriverWait wait = new WebDriverWait(driver, 3);
         try {
             WebElement infobox = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("infobox")));
             Screenshot myScreenshot = new AShot().shootingStrategy(ShootingStrategies.viewportPasting(100)).takeScreenshot(driver, infobox);
@@ -45,7 +45,7 @@ class WikiBox {
         } catch (Exception e) {
             e.printStackTrace();
             driver.quit();
-            throw new NoSuchElementException("dummythicc");
+            throw new Exception("dummythicc");
         }
     }
 
@@ -88,7 +88,7 @@ class WikiBox {
         //sends input
         searchBox.sendKeys(input);
         //waits for search results to load and loads first result
-        Thread.sleep(700);
+        driver.manage().timeouts().implicitlyWait(700, TimeUnit.MILLISECONDS);
         searchBox.sendKeys(Keys.ARROW_DOWN);
         searchBox.sendKeys(Keys.RETURN);
 
