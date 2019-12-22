@@ -1,12 +1,15 @@
 package warbot;
 
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.openqa.selenium.NoSuchElementException;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
@@ -48,6 +51,10 @@ public class MyListener extends ListenerAdapter {
                 channel.sendMessage(eightBall()).queue();
             }
 
+            if (input.equals("profile")) {
+                channel.sendMessage(profile(message)).queue();
+            }
+
             //WIP wiki command
             else if (input.startsWith("wiki ") || input.startsWith("w ")) {
                 MessageChannel finalChannel = channel;
@@ -65,7 +72,7 @@ public class MyListener extends ListenerAdapter {
             }
 
             //screenshot wikipedia infobox
-            else if (input.startsWith("pic ") || input.startsWith("p ")) {
+            else if (input.startsWith("pic ")) {
                 MessageChannel finalChannel = event.getChannel();
                 new Thread(() -> {
                     try {
@@ -123,7 +130,9 @@ public class MyListener extends ListenerAdapter {
                         "\nweather: ~t toronto or ~t toronto, CA\nWiki: ~w [page] (only works on pages with infobox)").queue();
             }
 
+
         }
+
 
     }
 
@@ -133,5 +142,15 @@ public class MyListener extends ListenerAdapter {
         int x = (int) (10.0 * Math.random());
         return ANSWERS[x];
 
+    }
+
+    private MessageEmbed profile(Message message) {
+        return new EmbedBuilder()
+                .setTitle(message.getAuthor().getAsTag())
+                .setDescription("Username: " + message.getAuthor().getName())
+                .setColor(new Color(3764513))
+                .setImage(message.getAuthor().getAvatarUrl())
+                .addField("ID", message.getAuthor().getId(), false)
+                .build();
     }
 }
