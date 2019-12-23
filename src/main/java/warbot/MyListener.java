@@ -26,22 +26,7 @@ public class MyListener extends ListenerAdapter {
         Message message = event.getMessage();
         String content = message.getContentRaw();
         MessageChannel channel = event.getChannel();
-
-        //meme responses
-        if (content.toLowerCase().startsWith("tch")) {
-            channel.sendMessage("tch yourself").queue(); //annoys kratos
-        }
-        if (content.toLowerCase().startsWith("cope")) {
-            message.addReaction(":cope:588146215779172378").queue(); //reacts with the cope emote to messages starting with cope
-        }
-
-        if (content.toLowerCase().startsWith("based") || content.toLowerCase().contains(":based:") || content.toLowerCase().contains(" based")) {
-            channel.sendMessage("based").queue(); //responds with based when someone says  based
-            message.addReaction(":based:653403140829478958").queue();
-        }
-
-        //commands
-
+        
         //remove the first part of string
         if (content.startsWith(PREFIX)) {
             String input = content.substring(content.indexOf(PREFIX) + 1).toLowerCase();
@@ -147,7 +132,7 @@ public class MyListener extends ListenerAdapter {
     private MessageEmbed profile(Message message) {
         return new EmbedBuilder()
                 .setTitle(message.getAuthor().getAsTag())
-                .setDescription("Username: " + message.getAuthor().getName())
+                .addField("username", message.getAuthor().getName(), false)
                 .setColor(new Color(3764513))
                 .setImage(message.getAuthor().getAvatarUrl())
                 .addField("ID", message.getAuthor().getId(), false)
