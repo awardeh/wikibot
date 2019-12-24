@@ -1,17 +1,25 @@
-# warbot - a WIP Discord bot
+# wikibot - a WIP Discord bot
 prefix: ~
 
-currently warbot has 3 usages 
+currently wikibot has 4 usages 
 
-take a screenshot of the infobox of a wikipedia page
+gets text from wikipedia infobox
 
-    ~pic <wikipedia page with infobox> 
+    [~wiki or ~w] <wikipedia page with infobox>
+ 
+ take a screenshot of the infobox of a wikipedia page
+
+    [~pic or ~p] <wikipedia page with infobox> 
+    
+returns the temperature, min/max, and windspeed of specified city
+
+    ~temp <city> or ~t <city, country code>
   
-  returns the temperature, min/max, and windspeed of specified city
 
-    ~weather <city> or ~w <city, country code>
-  
 basic 8ball-like command
 
     ~question <anything>
-    
+
+
+  
+
