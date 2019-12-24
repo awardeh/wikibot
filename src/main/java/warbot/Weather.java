@@ -149,19 +149,19 @@ public class Weather {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.connect();
-        String inline = "";
-        int responsecode = conn.getResponseCode();
-        if (responsecode == 404) {
+        StringBuilder inline = new StringBuilder();
+        int responseCode = conn.getResponseCode();
+        if (responseCode == 404) {
             throw new IllegalArgumentException("not found");
         }
-        if (responsecode != 200) {
-            throw new RuntimeException("HttpResponseCode: " + responsecode);
+        if (responseCode != 200) {
+            throw new RuntimeException("HttpResponseCode: " + responseCode);
         } else {
             Scanner sc = new Scanner(url.openStream());
-            while (sc.hasNext()) inline += (sc.nextLine());
+            while (sc.hasNext()) inline.append(sc.nextLine());
             sc.close();
         }
-        return new JSONObject(inline);
+        return new JSONObject(inline.toString());
 
     }
 
