@@ -13,21 +13,17 @@ import ru.yandex.qatools.ashot.Screenshot;
 import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
 
 import javax.imageio.ImageIO;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 class WikiBox implements Logger {
 
     private static final String PATH = "./screenshot.jpg";//path to screenshot
-    private static final String INPUTS = "./inputs.txt";//stores user inputs
-
 
     static void scrapeWikiPic(String input) throws Exception {
         //save user inputs in text file
-        logInput(("pic + " + input));
+        Logger.logInput(("pic " + input));
         //get the driver from the getPage method
         ChromeDriver driver = getPage(input);
         //set wait time for element to load to 2 seconds
@@ -51,7 +47,7 @@ class WikiBox implements Logger {
 
     public static String scrapeWikiText(String input) throws IOException {
         //save user inputs in text file
-        logInput(("wiki + " + input));
+        Logger.logInput(("wiki " + input));
         //get the driver from the getPage method
         ChromeDriver driver = getPage(input);
         //set wait time for element to load to 500 ms
@@ -93,13 +89,6 @@ class WikiBox implements Logger {
         searchBox.sendKeys(Keys.RETURN);
 
         return driver;
-    }
-
-    private static void logInput(String input) throws IOException {
-        BufferedWriter out = new BufferedWriter(new FileWriter(INPUTS, true));
-        out.write(input);
-        out.newLine();
-        out.close();
     }
 
     public static void main(String[] args) throws IOException {

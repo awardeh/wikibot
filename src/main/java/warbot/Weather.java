@@ -3,8 +3,6 @@ package warbot;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -29,7 +27,7 @@ public class Weather implements Logger {
         Path path = Paths.get("./weathertoken"); //the path of the bottoken file should be in the project folder or in the jar folder
         String weatherToken; // intializes bot token
         weatherToken = Files.readString(path); //reads the weatherapi
-        logInput(s);
+        Logger.logInput("temp " + s);
 
         JSONObject obj;
 
@@ -107,10 +105,10 @@ public class Weather implements Logger {
             emojiWeather = "🌧️";
         if (description.contains("haze") || description.contains("fog"))
             emojiWeather = "🌫️";
-//        String encodedCity = URLEncoder.encode(cityName, StandardCharsets.UTF_8);
-
-        return String.format("%s, %s %s - %s %s\nTemperature: %s° C\nFeels like: %s° C\nLow: %s° C\nHigh: %s° C\nWind speed: %s km/h direction of %s (%s°)\nHumidity: %s\n",
+        String output = String.format("%s, %s %s - %s %s\nTemperature: %s° C\nFeels like: %s° C\nLow: %s° C\nHigh: %s° C\nWind speed: %s km/h direction of %s (%s°)\nHumidity: %s\n",
                 cityName, country, emojiCountry, description, emojiWeather, round(temp), round(windChill), round(tempMin), round(tempMax), round(windSpeed), windDir, round(windDeg), humidity);
+        Logger.logOutput(output);
+        return output;
     }
 
 
@@ -147,20 +145,6 @@ public class Weather implements Logger {
         }
         return new JSONObject(inline.toString());
 
-    }
-
-    private static void logInput(String input) throws IOException {
-        BufferedWriter out = new BufferedWriter(new FileWriter(INPUTS, true));
-        out.write("temp " + " " + input);
-        out.newLine();
-        out.close();
-    }
-
-    static void logOutput(String output) throws IOException {
-        BufferedWriter out = new BufferedWriter(new FileWriter(OUTPUTS, true));
-        out.write(output);
-        out.newLine();
-        out.close();
     }
 
     public static void main(String[] args) throws IOException {
