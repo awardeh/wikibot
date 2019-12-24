@@ -19,24 +19,17 @@ import static java.lang.Float.parseFloat;
 import static java.lang.Math.pow;
 import static java.lang.Math.round;
 
-public class Weather {
+public class Weather implements Logger {
     private static final String API_SITE = "http://api.openweathermap.org/data/2.5/weather?q=";
     private static final String API_KEY = "&appid=";
     private static final String UNITS = "&units=metric";
-    private static final String INPUTS = "./inputs.txt";
-    private static final String OUTPUTS = "./outputs.txt";
 
     public static String getWeather(String s) throws IOException {
 
         Path path = Paths.get("./weathertoken"); //the path of the bottoken file should be in the project folder or in the jar folder
         String weatherToken; // intializes bot token
         weatherToken = Files.readString(path); //reads the weatherapi
-
-
-        BufferedWriter in = new BufferedWriter(new FileWriter(INPUTS, true));
-        in.write("weather " + s);
-        in.newLine();
-        in.close();
+        logInput(s);
 
         JSONObject obj;
 
@@ -53,10 +46,10 @@ public class Weather {
         float windSpeed;
         double windChill;
         if (s.contains(",")) {
-            String[] splittedString = s.trim().split(",");
-            splittedString[0] = splittedString[0].trim();
-            splittedString[1] = splittedString[1].trim();
-            obj = openWeatherCountry(splittedString, weatherToken);
+            String[] formattedInput = s.trim().split(",");
+            formattedInput[0] = formattedInput[0].trim();
+            formattedInput[1] = formattedInput[1].trim();
+            obj = openWeatherCountry(formattedInput, weatherToken);
         } else {
             String input = s.trim();
             obj = openWeather(input, weatherToken);
@@ -116,22 +109,14 @@ public class Weather {
             emojiWeather = "🌫️";
 //        String encodedCity = URLEncoder.encode(cityName, StandardCharsets.UTF_8);
 
-        String result = String.format("%s, %s %s - %s %s\nTemperature: %s° C\nFeels like: %s° C\nLow: %s° C\nHigh: %s° C\nWind speed: %s km/h direction of %s (%s°)\nHumidity: %s\n",
+        return String.format("%s, %s %s - %s %s\nTemperature: %s° C\nFeels like: %s° C\nLow: %s° C\nHigh: %s° C\nWind speed: %s km/h direction of %s (%s°)\nHumidity: %s\n",
                 cityName, country, emojiCountry, description, emojiWeather, round(temp), round(windChill), round(tempMin), round(tempMax), round(windSpeed), windDir, round(windDeg), humidity);
-
-        BufferedWriter out = new BufferedWriter(new FileWriter(OUTPUTS, true));
-        out.write(result);
-        out.newLine();
-        out.close();
-        System.out.println(result);
-
-        return result;
     }
+
 
     private static JSONObject openWeatherCountry(String[] splitString, String weatherToken) throws IOException {
         String encodedString = URLEncoder.encode(splitString[0], StandardCharsets.UTF_8);
         URL url = new URL(API_SITE + encodedString + "," + splitString[1] + API_KEY + weatherToken + UNITS);
-        System.out.println(url);
         return getJSON(url);
     }
 
@@ -139,7 +124,6 @@ public class Weather {
     private static JSONObject openWeather(String city, String weatherToken) throws IOException {
         String encodedString = URLEncoder.encode(city, StandardCharsets.UTF_8);
         URL url = new URL(API_SITE + encodedString + API_KEY + weatherToken + UNITS);
-        System.out.println(url);
         return getJSON(url);
     }
 
@@ -165,8 +149,22 @@ public class Weather {
 
     }
 
+    private static void logInput(String input) throws IOException {
+        BufferedWriter out = new BufferedWriter(new FileWriter(INPUTS, true));
+        out.write("temp " + " " + input);
+        out.newLine();
+        out.close();
+    }
+
+    static void logOutput(String output) throws IOException {
+        BufferedWriter out = new BufferedWriter(new FileWriter(OUTPUTS, true));
+        out.write(output);
+        out.newLine();
+        out.close();
+    }
+
     public static void main(String[] args) throws IOException {
-        String string = getWeather("Toronto");
+        String string = getWeather("riyadh");
         System.out.println(string);
     }
 }

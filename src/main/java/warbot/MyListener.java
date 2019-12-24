@@ -26,7 +26,7 @@ public class MyListener extends ListenerAdapter {
         Message message = event.getMessage();
         String content = message.getContentRaw();
         MessageChannel channel = event.getChannel();
-        
+
         //remove the first part of string
         if (content.startsWith(PREFIX)) {
             String input = content.substring(content.indexOf(PREFIX) + 1).toLowerCase();

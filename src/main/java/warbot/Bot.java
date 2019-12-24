@@ -19,7 +19,7 @@ public class Bot extends ListenerAdapter {
         try {
             botToken = Files.readString(path); //reads the bottoken
         } catch (NoSuchFileException e) {
-            System.out.println("no bottoken");
+            System.out.println("no bot token");
             Files.writeString(path, ""); //creates an emtpy bottoken file in case there is none
         }
         JDA api = new JDABuilder(botToken).build();

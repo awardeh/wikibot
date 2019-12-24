@@ -19,7 +19,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-class WikiBox {
+class WikiBox implements Logger {
 
     private static final String PATH = "./screenshot.jpg";//path to screenshot
     private static final String INPUTS = "./inputs.txt";//stores user inputs
@@ -27,7 +27,7 @@ class WikiBox {
 
     static void scrapeWikiPic(String input) throws Exception {
         //save user inputs in text file
-        logInputPic((input));
+        logInput(("pic + " + input));
         //get the driver from the getPage method
         ChromeDriver driver = getPage(input);
         //set wait time for element to load to 2 seconds
@@ -51,7 +51,7 @@ class WikiBox {
 
     public static String scrapeWikiText(String input) throws IOException {
         //save user inputs in text file
-        logInputText(input);
+        logInput(("wiki + " + input));
         //get the driver from the getPage method
         ChromeDriver driver = getPage(input);
         //set wait time for element to load to 500 ms
@@ -95,16 +95,9 @@ class WikiBox {
         return driver;
     }
 
-    private static void logInputPic(String input) throws IOException {
+    private static void logInput(String input) throws IOException {
         BufferedWriter out = new BufferedWriter(new FileWriter(INPUTS, true));
-        out.write("pic " + input);
-        out.newLine();
-        out.close();
-    }
-
-    private static void logInputText(String input) throws IOException {
-        BufferedWriter out = new BufferedWriter(new FileWriter(INPUTS, true));
-        out.write("pic " + input);
+        out.write(input);
         out.newLine();
         out.close();
     }
