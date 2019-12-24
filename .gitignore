@@ -9,3 +9,8 @@
 /outputs.txt
 /weathertoken
 /inputs.txt
+/.gradle/
+/.idea/
+/.settings/
+/build/
+/gradle/
