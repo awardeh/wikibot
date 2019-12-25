@@ -23,15 +23,13 @@ public class Weather implements Logger {
     private static final String UNITS = "&units=metric";
 
     public static String getWeather(String s) throws IOException {
-
-        Path path = Paths.get("./weathertoken"); //the path of the bottoken file should be in the project folder or in the jar folder
-        String weatherToken; // intializes bot token
-        weatherToken = Files.readString(path); //reads the weatherapi
         Logger.logInput("temp " + s);
 
+        Path path = Paths.get("./weathertoken"); //the path of the weather token file should be in the project folder or in the jar folder
+        String weatherToken; // initializes bot token
+        weatherToken = Files.readString(path); //reads the weather api
+
         JSONObject obj;
-
-
         String windDir = "";
         String description;
         String country;
@@ -43,6 +41,7 @@ public class Weather implements Logger {
         float temp;
         float windSpeed;
         double windChill;
+
         if (s.contains(",")) {
             String[] formattedInput = s.trim().split(",");
             formattedInput[0] = formattedInput[0].trim();
@@ -57,12 +56,12 @@ public class Weather implements Logger {
         JSONObject weather2 = (JSONObject) weather.get(0);
         JSONObject wind = (JSONObject) obj.get("wind");
         JSONObject sys = (JSONObject) obj.get("sys");
+
         try {
             windDeg = parseFloat(wind.get("deg").toString());
         } catch (Exception e) {
             windDeg = 0;
         }
-
 
         tempMin = parseFloat(main.get("temp_min").toString());
         tempMax = parseFloat(main.get("temp_max").toString());
@@ -75,6 +74,7 @@ public class Weather implements Logger {
         cityName = obj.get("name").toString();
         byte[] b = cityName.getBytes(StandardCharsets.UTF_8);
         cityName = new String(b, StandardCharsets.UTF_8);
+
         if (windDeg < 33.75 || windDeg > 348.75)
             windDir = "North";
         if (windDeg < 78.75 && windDeg > 33.75)

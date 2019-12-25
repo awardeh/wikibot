@@ -59,11 +59,11 @@ class WikiBox implements Logger {
             settings.prettyPrint(true);
             driver.quit();
             Elements infobox = document.getElementsByClass("infobox");
-            Elements date = infobox.get(0).getElementsByTag("tr");
+            Elements infoboxText = infobox.get(0).getElementsByTag("tr");
             StringBuilder myString = new StringBuilder();
-            for (int i = 0; i < date.size() / 2; i++) {
-                if (!Jsoup.parse(date.get(i).toString()).text().isBlank()) {
-                    myString.append(Jsoup.parse(date.get(i).toString()).text()).append("\n\n");
+            for (int i = 0; i < infoboxText.size() / 2; i++) {
+                if (!Jsoup.parse(infoboxText.get(i).toString()).text().isBlank()) {
+                    myString.append(Jsoup.parse(infoboxText.get(i).toString()).text()).append("\n\n");
                 }
             }
             return myString.toString();
@@ -80,9 +80,9 @@ class WikiBox implements Logger {
         ChromeDriver driver = getPage(input);
         //set wait time for element to load to 500 ms
         driver.manage().timeouts().implicitlyWait(500, TimeUnit.MILLISECONDS);
-        List<WebElement> images = driver.findElementsByTagName("img");
+        List<WebElement> images = driver.findElementByClassName("mw-parser-output").findElements(By.tagName("img"));
         if (images.size() > 0) {
-            String imgURL = driver.findElementByClassName("mw-parser-output").findElement(By.tagName("img")).getAttribute("src");
+            String imgURL = images.get(0).getAttribute("src");
             driver.quit();
             return imgURL;
         } else {
