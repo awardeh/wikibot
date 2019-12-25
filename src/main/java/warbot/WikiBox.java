@@ -15,13 +15,14 @@ import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 class WikiBox implements Logger {
 
     private static final String PATH = "./screenshot.jpg";//path to screenshot
 
-    static void scrapeWikiPic(String input) throws Exception {
+    static void screenshotInfobox(String input) throws Exception {
         //save user inputs in text file
         Logger.logInput(("pic " + input));
         //get the driver from the getPage method
@@ -45,7 +46,7 @@ class WikiBox implements Logger {
         }
     }
 
-    public static String scrapeWikiText(String input) throws IOException {
+    public static String scrapeInfobox(String input) throws IOException {
         //save user inputs in text file
         Logger.logInput(("wiki " + input));
         //get the driver from the getPage method
@@ -72,6 +73,24 @@ class WikiBox implements Logger {
         }
     }
 
+    public static String getImage(String input) throws IOException {
+        //save user inputs in text file
+        Logger.logInput(("image " + input));
+        //get the driver from the getPage method
+        ChromeDriver driver = getPage(input);
+        //set wait time for element to load to 500 ms
+        driver.manage().timeouts().implicitlyWait(500, TimeUnit.MILLISECONDS);
+        List<WebElement> images = driver.findElementsByTagName("img");
+        if (images.size() > 0) {
+            String imgURL = driver.findElementByClassName("mw-parser-output").findElement(By.tagName("img")).getAttribute("src");
+            driver.quit();
+            return imgURL;
+        } else {
+            driver.quit();
+            throw new NoSuchElementException("not found boss");
+        }
+    }
+
 
     private static ChromeDriver getPage(String input) {
         //start firefox in headless mode
@@ -92,6 +111,6 @@ class WikiBox implements Logger {
     }
 
     public static void main(String[] args) throws IOException {
-        System.out.println(scrapeWikiText("Battle of the Bulge"));
+        System.out.println(getImage("Battle of the Bulge"));
     }
 }

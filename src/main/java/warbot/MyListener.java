@@ -29,6 +29,7 @@ public class MyListener extends ListenerAdapter {
 
         //remove the first part of string
         if (content.startsWith(PREFIX)) {
+            MessageChannel finalChannel = event.getChannel();
             String input = content.substring(content.indexOf(PREFIX) + 1).toLowerCase();
 
             //rng answers aka 8ball
@@ -42,10 +43,9 @@ public class MyListener extends ListenerAdapter {
 
             //WIP wiki command
             else if (input.startsWith("wiki ") || input.startsWith("w ")) {
-                MessageChannel finalChannel = channel;
                 new Thread(() -> {
                     try {
-                        finalChannel.sendMessage("```" + WikiBox.scrapeWikiText(input.substring(input.indexOf(" "))) + "```").queue();
+                        finalChannel.sendMessage("```" + WikiBox.scrapeInfobox(input.substring(input.indexOf(" "))) + "```").queue();
                     } catch (NoSuchElementException e) {
                         e.printStackTrace();
                         finalChannel.sendMessage("no infobox found").queue();
@@ -57,11 +57,10 @@ public class MyListener extends ListenerAdapter {
             }
 
             //screenshot wikipedia infobox
-            else if (input.startsWith("pic ")) {
-                MessageChannel finalChannel = event.getChannel();
+            else if (input.startsWith("pic ") || input.startsWith("p ")) {
                 new Thread(() -> {
                     try {
-                        WikiBox.scrapeWikiPic(input.substring(input.indexOf(" ")));
+                        WikiBox.screenshotInfobox(input.substring(input.indexOf(" ")));
                         File file = new File(PATH);
                         finalChannel.sendFile(file).queue();
                         file.delete();
@@ -72,6 +71,16 @@ public class MyListener extends ListenerAdapter {
                     }
                 }).start();
 
+            } else if (input.startsWith("image ") || input.startsWith("i ")) {
+                new Thread(() -> {
+                    try {
+                        finalChannel.sendMessage(WikiBox.getImage(input.substring(input.indexOf(" ")))).queue();
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        finalChannel.sendMessage("Not Found").queue();
+                    }
+                }).start();
             }
             //weather
             else if (input.startsWith("temp ") || input.startsWith("t ")) {
@@ -112,21 +121,15 @@ public class MyListener extends ListenerAdapter {
             //lists commands
             if (input.startsWith("help") || input.startsWith("h ")) {
                 channel.sendMessage("WIP current commands:\nscreenshot infobox: ~p [page] (only works on pages with infobox)\n8ball/question: ~q [question]," +
-                        "\nweather: ~t toronto or ~t toronto, CA\nWiki: ~w [page] (only works on pages with infobox)").queue();
+                        "\nweather: ~t toronto or ~t toronto, CA\nWiki: ~w [page] (only works on pages with infobox)\nget image from article: ~i or ~image <wiki article>").queue();
             }
-
-
         }
-
-
     }
-
 
     private String eightBall() {
         final String[] ANSWERS = {"no", "yes", "bruh no way", "yes obviously", "maybe", "not sure tbh", "shut up", "I don't think so", "If you believe", "sure"};
         int x = (int) (10.0 * Math.random());
         return ANSWERS[x];
-
     }
 
     private MessageEmbed profile(Message message) {
