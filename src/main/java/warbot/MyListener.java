@@ -1,15 +1,12 @@
 package warbot;
 
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.openqa.selenium.NoSuchElementException;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
@@ -34,11 +31,11 @@ public class MyListener extends ListenerAdapter {
 
             //rng answers aka 8ball
             if (input.startsWith("question ") || input.startsWith("q ")) {
-                channel.sendMessage(eightBall()).queue();
+                channel.sendMessage(Fun.eightBall()).queue();
             }
 
             if (input.equals("profile")) {
-                channel.sendMessage(profile(message)).queue();
+                channel.sendMessage(Fun.profile(message)).queue();
             }
 
             //WIP wiki command
@@ -125,20 +122,6 @@ public class MyListener extends ListenerAdapter {
             }
         }
     }
-
-    private String eightBall() {
-        final String[] ANSWERS = {"no", "yes", "bruh no way", "yes obviously", "maybe", "not sure tbh", "shut up", "I don't think so", "If you believe", "sure"};
-        int x = (int) (10.0 * Math.random());
-        return ANSWERS[x];
-    }
-
-    private MessageEmbed profile(Message message) {
-        return new EmbedBuilder()
-                .setTitle(message.getAuthor().getAsTag())
-                .addField("username", message.getAuthor().getName(), false)
-                .setColor(new Color(3764513))
-                .setImage(message.getAuthor().getAvatarUrl())
-                .addField("ID", message.getAuthor().getId(), false)
-                .build();
-    }
 }
+
+

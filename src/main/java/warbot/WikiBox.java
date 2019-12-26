@@ -104,7 +104,6 @@ class WikiBox implements Logger {
         driver.manage().timeouts().implicitlyWait(700, TimeUnit.MILLISECONDS);
         searchBox.sendKeys(Keys.ARROW_DOWN);
         searchBox.sendKeys(Keys.RETURN);
-
         return driver;
     }
 
