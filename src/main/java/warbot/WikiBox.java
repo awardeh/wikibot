@@ -33,16 +33,14 @@ class WikiBox implements Logger {
             WebElement infobox = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("infobox")));
             Screenshot myScreenshot = new AShot().shootingStrategy(ShootingStrategies.viewportPasting(100)).takeScreenshot(driver, infobox);
             ImageIO.write(myScreenshot.getImage(), "jpg", new File(PATH));
-            driver.quit();
-
         } catch (TimeoutException e) {
             e.printStackTrace();
-            driver.quit();
             throw new NoSuchElementException("bruh not found");
         } catch (Exception e) {
             e.printStackTrace();
-            driver.quit();
             throw new Exception("dummythicc");
+        } finally {
+            driver.quit();
         }
     }
 
