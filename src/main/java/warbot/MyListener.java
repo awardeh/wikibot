@@ -13,7 +13,7 @@ import java.io.IOException;
 
 public class MyListener extends ListenerAdapter {
     private static final String PATH = "./screenshot.jpg"; //path to screenshot
-    private static final String PREFIX = "~";
+    private static final String PREFIX = "$";
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
@@ -34,7 +34,9 @@ public class MyListener extends ListenerAdapter {
             if (input.startsWith("question ") || input.startsWith("q ")) {
                 channel.sendMessage(Fun.eightBall()).queue();
             }
-
+            if (input.startsWith("register") || input.startsWith("r")) {
+                channel.sendMessage(Fun.register(message)).queue();
+            }
             if (input.equals("profile")) {
                 channel.sendMessage(Fun.profile(message)).queue();
             }

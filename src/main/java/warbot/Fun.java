@@ -14,12 +14,25 @@ public class Fun {
     }
 
     static MessageEmbed profile(Message message) {
-        return new EmbedBuilder()
-                .setTitle(message.getAuthor().getAsTag())
-                .addField("username", message.getAuthor().getName(), false)
-                .setColor(new Color(3764513))
-                .setImage(message.getAuthor().getAvatarUrl())
-                .addField("ID", message.getAuthor().getId(), false)
-                .build();
+        try {
+            return new EmbedBuilder()
+                    .setTitle(message.getAuthor().getAsTag())
+                    .addField("profile", DB.getProfile(message.getAuthor().getId()), false)
+                    .setColor(new Color(3764513))
+                    .setImage(message.getAuthor().getAvatarUrl())
+                    .build();
+        } catch (IllegalArgumentException e) {
+            MessageEmbed error = new EmbedBuilder().setTitle("error").addField("Dummy thicccc error", "error", false).build();
+            return error;
+        }
+    }
+
+    static String register(Message message) {
+        try {
+            DB.insert(message.getAuthor().getId());
+            return "you've been registered";
+        } catch (IllegalArgumentException e) {
+            return "already registered";
+        }
     }
 }
