@@ -1,5 +1,6 @@
 package warbot;
 
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -117,11 +118,16 @@ public class MyListener extends ListenerAdapter {
 
             //lists commands
             if (input.startsWith("help") || input.startsWith("h ")) {
-                channel.sendMessage("WIP current commands:\nscreenshot infobox: ~p [page] (only works on pages with infobox)\n8ball/question: ~q [question]," +
-                        "\nweather: ~t toronto or ~t toronto, CA\nWiki: ~w [page] (only works on pages with infobox)\nget image from article: ~i or ~image <wiki article>").queue();
+                channel.sendMessage(new EmbedBuilder().setTitle("Wikibot")
+                        .setDescription("WIP")
+                        .setFooter("Wikibot", "https://cdn.discordapp.com/avatars/644742765678166026/94a9a050fd980695db4c7200aeb1a9b2.webp")
+                        .addField("Prefix", "~", false)
+                        .addField("text from wikipedia infobox", "[~wiki or ~w] <wikipedia page with infobox>", false)
+                        .addField("screenshot of the infobox", "[~pic or ~p] <wikipedia page with infobox>", false)
+                        .addField("temperature of city", "~temp <city> or ~t <city, country code>", false)
+                        .addField("basic 8ball-like command", "~question <anything>", false)
+                        .build()).queue();
             }
         }
     }
 }
-
-
