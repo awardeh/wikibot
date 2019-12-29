@@ -2,7 +2,7 @@ package warbot;
 
 import java.sql.*;
 
-public class DB {
+public class Profiles {
 
     public static Connection connect() {
         Connection conn = null;
@@ -20,7 +20,7 @@ public class DB {
         return conn;
     }
 
-    public static void insert(String id) {
+    public static void insert(String id) throws AlreadyRegisteredException {
         String sql = "INSERT INTO users(id) VALUES(?)";
 
         try (Connection conn = connect();
@@ -28,8 +28,7 @@ public class DB {
             pstmt.setString(1, id);
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new IllegalArgumentException();
+            throw new AlreadyRegisteredException();
         }
     }
 
@@ -40,7 +39,7 @@ public class DB {
             pstmt.setString(1, id);
             ResultSet rs = pstmt.executeQuery();
             rs.getInt("coins");
-            return "ID: " + rs.getString("id") + "\ncoins: " + rs.getInt("coins");
+            return "coins: " + rs.getInt("coins");
         } catch (SQLException e) {
             e.printStackTrace();
             throw new IllegalArgumentException();
@@ -48,21 +47,35 @@ public class DB {
     }
 
     public static void main(String[] args) {
-        System.out.println(getProfile("659855056568320000"));
+        giveMoney("659855056568320000", 5);
     }
 
-//    boolean inDatabase(String id) throws SQLException {
-//        String sql = "SELECT id FROM users WHERE id = ?";
-//
-//        try (Connection conn = connect();
-//             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-//            pstmt.setString(1, id);
-//            ResultSet rs = pstmt.executeUpdate();
-//            return rs.next();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    static boolean inDatabase(String id) {
+        String sql = "SELECT id FROM users WHERE id = ?";
 
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, id);
+            ResultSet rs = pstmt.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            return false;
+        }
 
+    }
+
+    static void giveMoney(String id, int value) {
+        String sql = "UPDATE users SET coins = coins + ? WHERE id = ?";
+
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, value);
+            pstmt.setString(2, id);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
 }
+

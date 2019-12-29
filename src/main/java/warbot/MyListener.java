@@ -30,7 +30,7 @@ public class MyListener extends ListenerAdapter {
             MessageChannel finalChannel = event.getChannel();
             String input = content.substring(content.indexOf(PREFIX) + 1).toLowerCase();
 
-            //rng answers aka 8ball
+            // fun commands
             if (input.startsWith("question ") || input.startsWith("q ")) {
                 channel.sendMessage(Fun.eightBall()).queue();
             }
@@ -45,7 +45,8 @@ public class MyListener extends ListenerAdapter {
             else if (input.startsWith("wiki ") || input.startsWith("w ")) {
                 new Thread(() -> {
                     try {
-                        finalChannel.sendMessage("```" + WikiBox.scrapeInfobox(input.substring(input.indexOf(" "))) + "```").queue();
+                        finalChannel.sendMessage("```"
+                                + WikiBox.scrapeInfobox(input.substring(input.indexOf(" "))) + "```").queue();
                     } catch (NoSuchElementException e) {
                         e.printStackTrace();
                         finalChannel.sendMessage("no infobox found").queue();
@@ -96,7 +97,8 @@ public class MyListener extends ListenerAdapter {
                     }
                 } catch (IllegalArgumentException | IOException e) {
                     e.printStackTrace();
-                    channel.sendMessage("not found, try being specific [format is either ~t toronto or ~t toronto, CA]").queue();
+                    channel.sendMessage("not found, try being specific [format is either" +
+                            " ~t toronto or ~t toronto, CA]").queue();
                     message.addReaction(":ragescream:621200977671749652").queue();
                 } catch (Exception e) {
                     channel.sendMessage("dummy thicc error").queue();
@@ -105,8 +107,12 @@ public class MyListener extends ListenerAdapter {
             }
 
             //turn off
-            if (author.getId().equals("534564220704915456") || author.getId().equals("108312797162541056"))
-                if (input.startsWith("off yourself")) {
+            if (author.getId().equals("534564220704915456") || author.getId().equals("108312797162541056")) {
+                if (input.startsWith("givecoins ")) {
+                    String coins = content.substring(content.indexOf(" ", content.indexOf(" ") + 1));
+                    channel.sendMessage(Fun.giveCoins(message.getMentions().get(0).getId(),
+                            Integer.parseInt(coins.trim()))).queue();
+                } else if (input.startsWith("off yourself")) {
                     channel = event.getChannel();
                     channel.sendMessage("The sweet release of powering off <:woo:633411508180877339>").queue();
                     message.addReaction(":woo:633411508180877339").queue();
@@ -117,17 +123,24 @@ public class MyListener extends ListenerAdapter {
                     }
                     System.exit(0);
                 }
+            }
 
             //lists commands
             if (input.startsWith("help") || input.startsWith("h ")) {
                 channel.sendMessage(new EmbedBuilder().setTitle("Wikibot")
                         .setDescription("WIP")
-                        .setFooter("Wikibot", "https://cdn.discordapp.com/avatars/644742765678166026/94a9a050fd980695db4c7200aeb1a9b2.webp")
+                        .setFooter("Wikibot",
+                                "https://cdn.discordapp.com/avatars/644742765678166026/" +
+                                        "94a9a050fd980695db4c7200aeb1a9b2.webp")
                         .addField("Prefix", "~", false)
-                        .addField("text from wikipedia infobox", "[~wiki or ~w] <wikipedia page with infobox>", false)
-                        .addField("screenshot of the infobox", "[~pic or ~p] <wikipedia page with infobox>", false)
-                        .addField("temperature of city", "~temp <city> or ~t <city, country code>", false)
-                        .addField("basic 8ball-like command", "~question <anything>", false)
+                        .addField("text from wikipedia infobox",
+                                "[~wiki or ~w] <wikipedia page with infobox>", false)
+                        .addField("screenshot of the infobox",
+                                "[~pic or ~p] <wikipedia page with infobox>", false)
+                        .addField("temperature of city",
+                                "~temp <city> or ~t <city, country code>", false)
+                        .addField("basic 8ball-like command",
+                                "~question <anything>", false)
                         .build()).queue();
             }
         }

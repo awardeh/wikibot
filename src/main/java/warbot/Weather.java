@@ -24,8 +24,8 @@ public class Weather implements Logger {
 
     public static String getWeather(String s) throws IOException {
         Logger.logInput("temp " + s);
-
-        Path path = Paths.get("./weathertoken"); //the path of the weather token file should be in the project folder or in the jar folder
+        //the path of the weather token file should be in the project folder or in the jar folder
+        Path path = Paths.get("./weathertoken");
         String weatherToken; // initializes bot token
         weatherToken = Files.readString(path); //reads the weather api
 
@@ -105,8 +105,12 @@ public class Weather implements Logger {
             emojiWeather = "🌧️";
         if (description.contains("haze") || description.contains("fog"))
             emojiWeather = "🌫️";
-        String output = String.format("%s, %s %s - %s %s\nTemperature: %s° C\nFeels like: %s° C\nLow: %s° C\nHigh: %s° C\nWind speed: %s km/h direction of %s (%s°)\nHumidity: %s\n",
-                cityName, country, emojiCountry, description, emojiWeather, round(temp), round(windChill), round(tempMin), round(tempMax), round(windSpeed), windDir, round(windDeg), humidity);
+        String output = String.format("%s, %s %s - %s %s\nTemperature: %s° C" +
+                        "\nFeels like: %s° C\nLow: %s° C\nHigh: %s° C" +
+                        "\nWind speed: %s km/h direction of %s (%s°)\nHumidity: %s\n",
+                cityName, country, emojiCountry, description, emojiWeather, round(temp), round(windChill)
+                , round(tempMin), round(tempMax), round(windSpeed), windDir, round(windDeg), humidity);
+
         Logger.logOutput(output);
         return output;
     }
