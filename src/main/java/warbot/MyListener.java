@@ -13,7 +13,7 @@ import java.io.IOException;
 
 public class MyListener extends ListenerAdapter {
     private static final String PATH = "./screenshot.jpg"; //path to screenshot
-    private static final String PREFIX = "$";
+    private static final String PREFIX = "~";
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
@@ -33,12 +33,6 @@ public class MyListener extends ListenerAdapter {
             // fun commands
             if (input.startsWith("question ") || input.startsWith("q ")) {
                 channel.sendMessage(Fun.eightBall()).queue();
-            }
-            if (input.startsWith("register") || input.startsWith("r")) {
-                channel.sendMessage(Fun.register(message)).queue();
-            }
-            if (input.equals("profile")) {
-                channel.sendMessage(Fun.profile(message)).queue();
             }
 
             //WIP wiki command
@@ -99,7 +93,6 @@ public class MyListener extends ListenerAdapter {
                     e.printStackTrace();
                     channel.sendMessage("not found, try being specific [format is either" +
                             " ~t toronto or ~t toronto, CA]").queue();
-                    message.addReaction(":ragescream:621200977671749652").queue();
                 } catch (Exception e) {
                     channel.sendMessage("dummy thicc error").queue();
                     message.addReaction(":ragescream:621200977671749652").queue();
@@ -108,11 +101,7 @@ public class MyListener extends ListenerAdapter {
 
             //turn off
             if (author.getId().equals("534564220704915456") || author.getId().equals("108312797162541056")) {
-                if (input.startsWith("givecoins ")) {
-                    String coins = content.substring(content.indexOf(" ", content.indexOf(" ") + 1));
-                    channel.sendMessage(Fun.giveCoins(message.getMentions().get(0).getId(),
-                            Integer.parseInt(coins.trim()))).queue();
-                } else if (input.startsWith("off yourself")) {
+                if (input.startsWith("off yourself")) {
                     channel = event.getChannel();
                     channel.sendMessage("The sweet release of powering off <:woo:633411508180877339>").queue();
                     message.addReaction(":woo:633411508180877339").queue();
