@@ -52,8 +52,7 @@ public class Weather implements Logger {
             obj = openWeather(input, weatherToken);
         }
         JSONObject main = (JSONObject) obj.get("main");
-        JSONArray weather = (JSONArray) obj.get("weather");
-        JSONObject weather2 = (JSONObject) weather.get(0);
+        JSONObject weather = (JSONObject) ((JSONArray) obj.get("weather")).get(0);
         JSONObject wind = (JSONObject) obj.get("wind");
         JSONObject sys = (JSONObject) obj.get("sys");
 
@@ -69,7 +68,7 @@ public class Weather implements Logger {
         windSpeed = parseFloat(wind.get("speed").toString());
         windChill = 35.74 + 0.6215 * temp - 35.75 * pow(windSpeed, 0.16) + 0.3965 * temp * Math.pow(windSpeed, 0.16);
         humidity = parseFloat(main.get("humidity").toString());
-        description = weather2.get("description").toString();
+        description = weather.get("description").toString();
         country = sys.get("country").toString();
         cityName = obj.get("name").toString();
         byte[] b = cityName.getBytes(StandardCharsets.UTF_8);
