@@ -18,13 +18,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-class WikiBox implements Logger {
+class WikiBox {
 
     private static final String PATH = "./screenshot.jpg";//path to screenshot
 
     static void screenshotInfobox(String input) throws Exception {
         //save user inputs in text file
-        Logger.logInput(("pic " + input));
         //get the driver from the getPage method
         ChromeDriver driver = getPage(input);
         //set wait time for element to load to 2 seconds
@@ -46,7 +45,6 @@ class WikiBox implements Logger {
 
     public static String scrapeInfobox(String input) throws IOException {
         //save user inputs in text file
-        Logger.logInput(("wiki " + input));
         //get the driver from the getPage method
         ChromeDriver driver = getPage(input);
         //set wait time for element to load to 500 ms
@@ -71,9 +69,8 @@ class WikiBox implements Logger {
         }
     }
 
-    public static String getImage(String input) throws IOException {
+    public static String getImage(String input) {
         //save user inputs in text file
-        Logger.logInput(("image " + input));
         //get the driver from the getPage method
         ChromeDriver driver = getPage(input);
         //set wait time for element to load to 500 ms
@@ -107,7 +104,7 @@ class WikiBox implements Logger {
         return driver;
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         System.out.println(getImage("Battle of the Bulge"));
     }
 }
